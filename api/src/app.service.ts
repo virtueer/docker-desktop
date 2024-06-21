@@ -1,18 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { exec } from './common/cp';
+import { execPromise } from './common/cp';
 import { parseLabels, text2json } from './common/parse';
 import { DockerPs, GetDockerPsResponse } from '~types/ps';
+
+const exec = (command: string) => {
+  console.log('Command ->', command);
+  return execPromise(command, { shell: 'bash' });
+};
 
 @Injectable()
 export class AppService {
   async getPs(): Promise<GetDockerPsResponse> {
-    const command = `docker ps -a --format '{{ json . }}'`;
-    const { stderr, stdout } = await exec(command, { shell: 'bash' }).catch(
-      (e) => e,
-    );
-    console.log('stderr', stderr);
+    const command = `docker ps -a --no-trunc --format '{{ json . }}'`;
+    const { stderr, stdout } = await exec(command).catch((e) => e);
 
     if (stderr) {
+      console.log('stderr', stderr);
       return { status: false, error: stderr };
     }
 
@@ -46,5 +49,17 @@ export class AppService {
         ...composes,
       ],
     };
+  }
+
+  async stopPs(id: string) {
+    const command = `docker stop ${id}`;
+    const { stderr } = await exec(command).catch((e) => e);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    return { status: true };
   }
 }

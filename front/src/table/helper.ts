@@ -2,9 +2,9 @@ import { Compose, DockerPs } from "~types/ps";
 import { toPascalCase } from "@/util";
 
 export const getStatus = (row: Compose | DockerPs) => {
-  const is_compose = !!(row as any).name;
+  const isCompose = !!(row as any).name;
 
-  if (is_compose) {
+  if (isCompose) {
     const data = row as Compose;
 
     const running = data.containers.filter((x) => x.State === "running").length;

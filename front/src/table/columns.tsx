@@ -1,37 +1,15 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
 import { ColumnDef } from "@tanstack/react-table";
-import { FaPlay, FaStop, FaTrash } from "react-icons/fa";
-import { FaPause } from "react-icons/fa6";
 import { GoContainer } from "react-icons/go";
-import { HiDotsVertical } from "react-icons/hi";
 import { ImStack } from "react-icons/im";
-import { IoEye, IoTerminal } from "react-icons/io5";
-import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
-import { PiFolderDuotone } from "react-icons/pi";
+import { MdContentCopy } from "react-icons/md";
 import { Compose, DockerPs } from "~types/ps";
-import { ExpandButton } from "./expand-button";
+import { Actions } from "./components/actions";
+import { ExpandButton } from "./components/expand-button";
+import { SortableHeader } from "./components/sortable-header";
 import { getStatus } from "./helper";
-import { SortableHeader } from "./sortable-header";
 
 type TData = Compose | DockerPs;
 
@@ -131,16 +109,31 @@ export const columns: ColumnDef<TData>[] = [
               <GoContainer size="1.5rem" color={containerIconColor} />
             )}
           </div>
-          <span className="text-blue-500 underline underline-offset-4 font-bold cursor-pointer">
-            {name}
-          </span>
+          <div className="flex flex-col gap-1">
+            <span className="underline underline-offset-4">{name}</span>
+            {(row.original as DockerPs).ID && (
+              <span
+                className="flex gap-1 items-center text-white text-xs"
+                onClick={() =>
+                  navigator.clipboard.writeText((row.original as DockerPs).ID)
+                }
+              >
+                {(row.original as DockerPs).ID.slice(0, 12)}
+                <Button
+                  variant="ghost"
+                  className="p-0 hover:bg-transparent focus:text-red-200 h-fit"
+                >
+                  <MdContentCopy />
+                </Button>
+              </span>
+            )}
+          </div>
         </div>
       );
     },
     meta: {
       headerStyle: { width: "30%" },
-      cellClass:
-        "text-blue-500 underline underline-offset-4 font-bold cursor-pointer",
+      cellClass: "text-blue-500 font-bold cursor-pointer",
     },
   },
   {
@@ -149,16 +142,6 @@ export const columns: ColumnDef<TData>[] = [
     header({ column }) {
       return <SortableHeader name="Image" column={column} />;
     },
-    // cell({ row }) {
-    //   return (
-    //     <span>{(row.original as DockerPs).Image}</span>
-    //     // <div className="border cursor-pointer">
-    //     //   <span className="text-blue-500 underline underline-offset-4 font-bold ">
-    //     //     {(row.original as DockerPs).Image}
-    //     //   </span>
-    //     // </div>
-    //   );
-    // },
     meta: {
       headerStyle: { width: "20%" },
       cellClass:
@@ -180,99 +163,17 @@ export const columns: ColumnDef<TData>[] = [
   {
     accessorKey: "Ports",
     meta: {
+      headerClass: "text-white",
       headerStyle: { width: "25%" },
     },
   },
   {
     accessorKey: "Actions",
     cell({ row }) {
-      const status = getStatus(row.original);
-      const running = status.startsWith("Up") || status.startsWith("Running");
-
-      const alertDialogTitle = (row.original as Compose).name
-        ? "Delete compose project?"
-        : "Delete container?";
-
-      const alertDialogDescription = (row.original as Compose).name
-        ? `The '${(row.original as Compose).name}' compose project is selected for deletion.`
-        : `The '${(row.original as DockerPs).Names}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
-
-      return (
-        <div className="flex gap-0.5">
-          <Button
-            variant="ghost"
-            className="p-2 rounded-full h-auto hover:bg-slate-300"
-          >
-            {running && <FaStop />}
-            {!running && <FaPlay />}
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="p-2 rounded-full h-auto hover:bg-slate-300"
-              >
-                <HiDotsVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem className="gap-2">
-                <IoEye size="1.2rem" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <MdContentCopy size="1.2rem" />
-                Copy docker run
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <IoTerminal size="1.2rem" />
-                Open in terminal
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <PiFolderDuotone size="1.2rem" />
-                View files
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <FaPause size="1.2rem" />
-                Pause
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2">
-                <MdOutlineRestartAlt size="1.2rem" />
-                Restart
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Separator orientation="vertical" className="h-auto" />
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="ghost"
-                className="p-2 rounded-full h-auto hover:bg-slate-300"
-              >
-                <FaTrash />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{alertDialogTitle}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {alertDialogDescription}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-600 hover:bg-red-500">
-                  Delete forever
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      );
+      return <Actions row={row} />;
     },
     meta: {
+      headerClass: "text-white",
       headerStyle: { width: "15%" },
     },
   },
