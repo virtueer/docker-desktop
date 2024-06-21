@@ -13,6 +13,7 @@ function Page() {
   return (
     <>
       {isFetching && "Loading..."}
+      {!data?.status && data?.error}
       {data?.status && <DataTable columns={columns} data={data.data} />}
     </>
   );

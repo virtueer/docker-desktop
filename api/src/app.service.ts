@@ -7,7 +7,9 @@ import { DockerPs, GetDockerPsResponse } from '~types/ps';
 export class AppService {
   async getPs(): Promise<GetDockerPsResponse> {
     const command = `docker ps -a --format '{{ json . }}'`;
-    const { stderr, stdout } = await exec(command, { shell: 'bash' });
+    const { stderr, stdout } = await exec(command, { shell: 'bash' }).catch(
+      (e) => e,
+    );
     console.log('stderr', stderr);
 
     if (stderr) {

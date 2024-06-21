@@ -1,4 +1,14 @@
-import { Compose, DockerPs } from "~types/ps";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,19 +28,10 @@ import { ImStack } from "react-icons/im";
 import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
+import { Compose, DockerPs } from "~types/ps";
 import { ExpandButton } from "./expand-button";
 import { getStatus } from "./helper";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { SortableHeader } from "./sortable-header";
 
 type TData = Compose | DockerPs;
 
@@ -44,6 +45,7 @@ export const columns: ColumnDef<TData>[] = [
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
+          className="border-white"
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
@@ -53,6 +55,7 @@ export const columns: ColumnDef<TData>[] = [
       return (
         <Checkbox
           checked={row.getIsSelected()}
+          className="border-white"
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
@@ -73,7 +76,10 @@ export const columns: ColumnDef<TData>[] = [
   },
   {
     id: "Name",
-    header: "Name",
+    accessorFn: (row) => (row as Compose).name || (row as DockerPs).Names,
+    header({ column }) {
+      return <SortableHeader name="Name" column={column} />;
+    },
     cell({ row }) {
       const name =
         (row.original as Compose).name || (row.original as DockerPs).Names;
@@ -98,12 +104,18 @@ export const columns: ColumnDef<TData>[] = [
       let composeIconColor = "";
       const status = getStatus(row.original);
       switch (true) {
+        case status.startsWith("Exited"):
+          composeIconColor = EXITED_COLOR;
+          break;
+
         case status.startsWith("Paused"):
           composeIconColor = PAUSED_COLOR;
           break;
 
-        case status.startsWith("Exited"):
-          composeIconColor = EXITED_COLOR;
+        case !!(row.original as Compose).containers?.find(
+          (x) => x.State !== "running"
+        ):
+          composeIconColor = PAUSED_COLOR;
           break;
 
         default:
@@ -119,22 +131,45 @@ export const columns: ColumnDef<TData>[] = [
               <GoContainer size="1.5rem" color={containerIconColor} />
             )}
           </div>
-          {name}
+          <span className="text-blue-500 underline underline-offset-4 font-bold cursor-pointer">
+            {name}
+          </span>
         </div>
       );
     },
     meta: {
       headerStyle: { width: "30%" },
+      cellClass:
+        "text-blue-500 underline underline-offset-4 font-bold cursor-pointer",
     },
   },
   {
     accessorKey: "Image",
+    accessorFn: (row) => (row as DockerPs)?.Image,
+    header({ column }) {
+      return <SortableHeader name="Image" column={column} />;
+    },
+    // cell({ row }) {
+    //   return (
+    //     <span>{(row.original as DockerPs).Image}</span>
+    //     // <div className="border cursor-pointer">
+    //     //   <span className="text-blue-500 underline underline-offset-4 font-bold ">
+    //     //     {(row.original as DockerPs).Image}
+    //     //   </span>
+    //     // </div>
+    //   );
+    // },
     meta: {
       headerStyle: { width: "20%" },
+      cellClass:
+        "text-blue-500 underline underline-offset-4 font-bold cursor-pointer",
     },
   },
   {
     accessorKey: "Status",
+    header({ column }) {
+      return <SortableHeader name="Status" column={column} />;
+    },
     accessorFn: (row) => {
       return getStatus(row);
     },
