@@ -17,17 +17,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { FaPlay, FaStop, FaTrash } from "react-icons/fa";
+import { getStatus } from "@/table/helper";
+import { FaTrash } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
 import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
 import { Compose, DockerPs } from "~types/ps";
-import { getStatus } from "../helper";
 
 import { Row } from "@tanstack/react-table";
-import { useStopDockerPs } from "@/api/stop-docker-ps";
+import PlayStop from "./play-stop";
 
 export function Actions({ row }: { row: Row<any> }) {
   const status = getStatus(row.original);
@@ -46,23 +46,9 @@ export function Actions({ row }: { row: Row<any> }) {
     ? `The '${compose.name}' compose project is selected for deletion.`
     : `The '${dockerPs.Names}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
 
-  const { mutate } = useStopDockerPs();
-
-  function handleStop() {
-    if (!isCompose) {
-      mutate(dockerPs.ID);
-    }
-  }
-
   return (
     <div className="flex gap-0.5">
-      <Button
-        variant="ghost"
-        className="p-2 rounded-full h-auto hover:bg-slate-300"
-      >
-        {running && <FaStop onClick={handleStop} />}
-        {!running && <FaPlay />}
-      </Button>
+      <PlayStop isCompose={isCompose} running={running} dockerPs={dockerPs} />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

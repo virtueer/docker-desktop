@@ -1,6 +1,12 @@
+import InfiniteLoading from "@/components/infinite-loading";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
+import {
+  EXITED_COLOR,
+  LOADING_STATE,
+  PAUSED_COLOR,
+  RUNNING_COLOR,
+} from "@/constants";
 import { ColumnDef } from "@tanstack/react-table";
 import { GoContainer } from "react-icons/go";
 import { ImStack } from "react-icons/im";
@@ -66,15 +72,15 @@ export const columns: ColumnDef<TData>[] = [
 
       let containerIconColor = "";
       switch (true) {
-        case (row.original as DockerPs).State === "paused":
+        case (row.original as DockerPs).State?.startsWith("paused"):
           containerIconColor = PAUSED_COLOR;
           break;
 
-        case (row.original as DockerPs).State === "exited":
+        case (row.original as DockerPs).State?.startsWith("exited"):
           containerIconColor = EXITED_COLOR;
           break;
 
-        default:
+        case (row.original as DockerPs).State?.startsWith("running"):
           containerIconColor = RUNNING_COLOR;
           break;
       }
@@ -155,6 +161,15 @@ export const columns: ColumnDef<TData>[] = [
     },
     accessorFn: (row) => {
       return getStatus(row);
+    },
+    cell({ row, column }) {
+      const state = (row.original as DockerPs).State;
+
+      return state?.endsWith(LOADING_STATE) ? (
+        <InfiniteLoading width="100px" />
+      ) : (
+        row.getValue(column.id)
+      );
     },
     meta: {
       headerStyle: { width: "20%" },

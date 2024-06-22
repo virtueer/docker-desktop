@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, Query } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -7,8 +7,13 @@ export class AppController {
   private appService: AppService;
 
   @Get('/ps')
-  getPs() {
-    return this.appService.getPs();
+  getAllPs() {
+    return this.appService.getAllPs();
+  }
+
+  @Get('/ps/:id')
+  getPs(@Param('id') id: string) {
+    return this.appService.getPs(id);
   }
 
   @Post('/ps/stop')

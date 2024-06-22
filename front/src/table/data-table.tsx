@@ -3,7 +3,9 @@ import {
   ColumnDef,
   ExpandedState,
   Header,
+  Row,
   SortingState,
+  Table as TanstackTable,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
@@ -26,6 +28,34 @@ import { cn } from "@/lib/utils";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+}
+
+function CustomTableRow({ row }: { row: Row<any> }) {
+  return (
+    <TableRow data-state={row.getIsSelected() && "selected"}>
+      {row.getVisibleCells().map((cell) => (
+        <CustomTableCell key={cell.id} cell={cell} />
+      ))}
+    </TableRow>
+  );
+}
+
+function CustomTableBody({ table }: { table: TanstackTable<any> }) {
+  const rowModel = table.getRowModel();
+
+  if (rowModel.rows?.length) {
+    return rowModel.rows.map((row) => (
+      <CustomTableRow key={row.id} row={row} />
+    ));
+  }
+
+  return (
+    <TableRow>
+      <TableCell colSpan={99} className="h-24 text-center">
+        No results.
+      </TableCell>
+    </TableRow>
+  );
 }
 
 function CustomTableCell({ cell }: { cell: Cell<any, unknown> }) {
@@ -91,24 +121,7 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <CustomTableCell key={cell.id} cell={cell} />
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
+          <CustomTableBody table={table} />
         </TableBody>
       </Table>
     </div>

@@ -11,9 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WatchIndexImport } from './routes/watch/index'
 import { Route as PsIndexImport } from './routes/ps/index'
 
 // Create/Update Routes
+
+const WatchIndexRoute = WatchIndexImport.update({
+  path: '/watch/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const PsIndexRoute = PsIndexImport.update({
   path: '/ps/',
@@ -31,12 +37,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/watch/': {
+      id: '/watch/'
+      path: '/watch'
+      fullPath: '/watch'
+      preLoaderRoute: typeof WatchIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ PsIndexRoute })
+export const routeTree = rootRoute.addChildren({
+  PsIndexRoute,
+  WatchIndexRoute,
+})
 
 /* prettier-ignore-end */
 
@@ -46,11 +62,15 @@ export const routeTree = rootRoute.addChildren({ PsIndexRoute })
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/ps/"
+        "/ps/",
+        "/watch/"
       ]
     },
     "/ps/": {
       "filePath": "ps/index.tsx"
+    },
+    "/watch/": {
+      "filePath": "watch/index.tsx"
     }
   }
 }
