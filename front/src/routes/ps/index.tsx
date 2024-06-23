@@ -1,4 +1,5 @@
 import { useGetDockerAllPs } from "@/api/get-docker-all-ps";
+import InfiniteLoading from "@/components/infinite-loading";
 import PsWatcher from "@/providers/ps-watcher";
 import { columns } from "@/table/columns";
 import { DataTable } from "@/table/data-table";
@@ -44,7 +45,11 @@ function Page() {
 
   return (
     <>
-      {isLoading && "Loading..."}
+      {isLoading && (
+        <div className="flex items-center justify-center h-screen">
+          <InfiniteLoading width="500px" />
+        </div>
+      )}
       {error}
       {grouped && (
         <>

@@ -20,7 +20,6 @@ function Page() {
 
   useEffect(() => {
     function onEvents(data: string) {
-      console.log("daaata", data);
       term.writeln(data);
     }
 

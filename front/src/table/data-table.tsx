@@ -1,7 +1,9 @@
 import {
   Cell,
   ColumnDef,
+  ColumnFiltersState,
   ExpandedState,
+  FilterFn,
   Header,
   Row,
   SortingState,
@@ -9,10 +11,13 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -22,13 +27,148 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import React from "react";
+import { FaSearch } from "react-icons/fa";
 import { Compose } from "~types/ps";
 import { useTableRowsMetadata } from "./metadata";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+}
+
+export type TableMetadata = {
+  rowsMetadata: ReturnType<typeof useTableRowsMetadata>;
+};
+
+declare module "@tanstack/react-table" {
+  //add fuzzy filter to the filterFns
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
+}
+
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  for (const subRow of row.subRows) {
+    const itemRank = rankItem(subRow.getValue(columnId), value);
+
+    addMeta({
+      itemRank,
+    });
+
+    if (itemRank.passed) return itemRank.passed;
+  }
+
+  const parentRow = row.getParentRow();
+  if (parentRow) {
+    const itemRank = rankItem(parentRow.getValue(columnId), value);
+
+    addMeta({
+      itemRank,
+    });
+
+    if (itemRank.passed) return itemRank.passed;
+  }
+
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  addMeta({
+    itemRank,
+  });
+
+  return itemRank.passed;
+};
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+
+  const rowsMetadata = useTableRowsMetadata();
+
+  const meta: TableMetadata = {
+    rowsMetadata,
+  };
+
+  const table = useReactTable({
+    data,
+    columns,
+    getSubRows: (row) => (row as Compose).containers as TData[],
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    onRowSelectionChange: setRowSelection,
+    onExpandedChange: setExpanded,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    globalFilterFn: "fuzzy",
+    state: {
+      rowSelection,
+      expanded,
+      sorting,
+      globalFilter,
+      columnFilters,
+    },
+    meta,
+  });
+
+  return (
+    <div className="rounded-md">
+      <div className="flex items-center mb-5 gap-5">
+        <div className="flex items-center  px-3 border rounded w-fit">
+          <FaSearch />
+          <Input
+            placeholder="Search"
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(String(e.target.value))}
+            className="border-none w-[300px]"
+            style={{ boxShadow: "none" }}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            onCheckedChange={(value) => {
+              setColumnFilters(
+                value ? [{ id: "select", value: "running" }] : []
+              );
+            }}
+            className="dark"
+          />
+          Only show running containers
+        </div>
+      </div>
+      <Table className="dark">
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return <CustomTableHead header={header} key={header.id} />;
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          <CustomTableBody table={table} />
+        </TableBody>
+      </Table>
+    </div>
+  );
 }
 
 function CustomTableRow({ row }: { row: Row<any> }) {
@@ -81,61 +221,5 @@ function CustomTableHead({ header }: { header: Header<any, unknown> }) {
         ? null
         : flexRender(header.column.columnDef.header, header.getContext())}
     </TableHead>
-  );
-}
-
-export type TableMetadata = {
-  rowsMetadata: ReturnType<typeof useTableRowsMetadata>;
-};
-
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [expanded, setExpanded] = React.useState<ExpandedState>({});
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
-  const rowsMetadata = useTableRowsMetadata();
-
-  const meta: TableMetadata = {
-    rowsMetadata,
-  };
-
-  const table = useReactTable({
-    data,
-    columns,
-    getSubRows: (row) => (row as Compose).containers as TData[],
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection,
-    onExpandedChange: setExpanded,
-    onSortingChange: setSorting,
-    state: {
-      rowSelection,
-      expanded,
-      sorting,
-    },
-    meta,
-  });
-
-  return (
-    <div className="rounded-md">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return <CustomTableHead header={header} key={header.id} />;
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          <CustomTableBody table={table} />
-        </TableBody>
-      </Table>
-    </div>
   );
 }

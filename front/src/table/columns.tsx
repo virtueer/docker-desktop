@@ -43,6 +43,15 @@ export const columns: ColumnDef<TData>[] = [
     },
     enableSorting: false,
     enableHiding: false,
+    filterFn: (row, _, filterValue) => {
+      for (const subRow of row.subRows) {
+        const pass = (subRow.original as DockerPs).State === filterValue;
+
+        if (pass) return true;
+      }
+
+      return (row.original as any).State === filterValue;
+    },
   },
   {
     id: "Expandable",

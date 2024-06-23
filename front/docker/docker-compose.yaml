@@ -9,3 +9,5 @@ services:
     image: alpine
     command: tail -f /dev/null
     scale: 2
+  serv4:
+    image: nginx
