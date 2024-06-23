@@ -48,7 +48,9 @@ function Page() {
       {error}
       {grouped && (
         <>
-          <DataTable columns={columns} data={grouped} />
+          <div className="p-5">
+            <DataTable columns={columns} data={grouped} />
+          </div>
           <PsWatcher />
         </>
       )}

@@ -16,7 +16,12 @@ export class EventsGateway implements OnApplicationBootstrap {
 
     child.stdout.on('data', (data) => {
       for (const [, socket] of this.server.sockets.sockets) {
-        socket.emit('events', JSON.parse(data.trim()));
+        try {
+          socket.emit('events', JSON.parse(data.trim()));
+        } catch (error) {
+          console.log(error);
+          console.log(data.trim());
+        }
       }
     });
   }
