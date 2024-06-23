@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { FaPlay, FaStop } from "react-icons/fa";
-import { DockerPs } from "~types/ps";
+import { Compose, DockerPs } from "~types/ps";
 
 import { useStartDockerPs } from "@/api/start-docker-ps";
 import { useStopDockerPs } from "@/api/stop-docker-ps";
 import { TableMetadata } from "@/table/data-table";
+import { getStatus } from "@/table/helper";
 import { Row, Table } from "@tanstack/react-table";
 
 export default function PlayStop({
@@ -20,32 +21,75 @@ export default function PlayStop({
   row: Row<any>;
   table: Table<any>;
 }) {
-  const { mutate: stopContainerMutate } = useStopDockerPs(dockerPs!.ID);
-  const { mutate: startContainerMutate } = useStartDockerPs(dockerPs!.ID);
+  const { mutateAsync: stopContainerMutate } = useStopDockerPs();
+  const { mutateAsync: startContainerMutate } = useStartDockerPs();
 
   const { rowsMetadata } = table.options.meta as TableMetadata;
 
-  const options = {
-    onSuccess() {
-      rowsMetadata.unSetRowMetadataLoading(row.id);
-    },
-  };
+  async function handleStop(containerId: string, rowId: string) {
+    await stopContainerMutate(containerId);
+    rowsMetadata.unSetRowMetadataLoading(rowId);
+  }
 
-  function handleStop() {
-    if (!isCompose) {
-      stopContainerMutate(undefined, options);
+  async function handlePlay(containerId: string, rowId: string) {
+    startContainerMutate(containerId);
+    rowsMetadata.unSetRowMetadataLoading(rowId);
+  }
+
+  function startContainer() {
+    rowsMetadata.setRowMetadataLoading(row.id);
+    handlePlay(dockerPs!.ID, row.id);
+  }
+
+  function stopContainer() {
+    rowsMetadata.setRowMetadataLoading(row.id);
+    handleStop(dockerPs!.ID, row.id);
+  }
+
+  function getRow(container: DockerPs) {
+    const rows = table.getRowModel().flatRows;
+    const row = rows.find(
+      (row) => (row.original as DockerPs).ID === container.ID
+    )!;
+
+    const isLoading = rowsMetadata.isRowLoading(row.id);
+    if (isLoading) {
+      return {};
+    }
+
+    const status = getStatus(row.original);
+    const started = status.startsWith("Up") || status.startsWith("Running");
+
+    return { started, row };
+  }
+
+  function stopCompose() {
+    for (const container of (row.original as Compose).containers) {
+      const { started, row } = getRow(container);
+
+      if (!row || !started) continue;
+
+      rowsMetadata.setRowMetadataLoading(row.id);
+      handleStop(container.ID, row.id);
     }
   }
 
-  function handlePlay() {
-    if (!isCompose) {
-      startContainerMutate(undefined, options);
+  function startCompose() {
+    for (const container of (row.original as Compose).containers) {
+      const { started, row } = getRow(container);
+
+      if (!row || started) continue;
+
+      rowsMetadata.setRowMetadataLoading(row.id);
+      handlePlay(container.ID, row.id);
     }
   }
 
   function handleClick() {
-    rowsMetadata.setRowMetadataLoading(row.id);
-    running ? handleStop() : handlePlay();
+    if (!isCompose && running) stopContainer();
+    if (!isCompose && !running) startContainer();
+    if (isCompose && running) stopCompose();
+    if (isCompose && !running) startCompose();
   }
 
   return (

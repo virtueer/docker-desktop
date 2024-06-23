@@ -7,8 +7,8 @@ async function stopDockerPs(id: string) {
   return response.data;
 }
 
-export const useStopDockerPs = (id: string) => {
+export const useStopDockerPs = () => {
   return useMutation({
-    mutationFn: () => stopDockerPs(id),
+    mutationFn: (id: string) => stopDockerPs(id),
   });
 };

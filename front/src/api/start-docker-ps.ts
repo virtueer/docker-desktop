@@ -7,8 +7,8 @@ async function startDockerPs(id: string) {
   return response.data;
 }
 
-export const useStartDockerPs = (id: string) => {
+export const useStartDockerPs = () => {
   return useMutation({
-    mutationFn: () => startDockerPs(id),
+    mutationFn: (id: string) => startDockerPs(id),
   });
 };

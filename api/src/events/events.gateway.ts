@@ -15,12 +15,16 @@ export class EventsGateway implements OnApplicationBootstrap {
     const child = exec(command);
 
     child.stdout.on('data', (data) => {
-      for (const [, socket] of this.server.sockets.sockets) {
-        try {
-          socket.emit('events', JSON.parse(data.trim()));
-        } catch (error) {
-          console.log(error);
-          console.log(data.trim());
+      const lines = data.trim().split(/\r?\n/);
+
+      for (const line of lines) {
+        for (const [, socket] of this.server.sockets.sockets) {
+          try {
+            socket.emit('events', JSON.parse(line));
+          } catch (error) {
+            console.log(error);
+            console.log('ERROR JSON -->', line, '<--');
+          }
         }
       }
     });
