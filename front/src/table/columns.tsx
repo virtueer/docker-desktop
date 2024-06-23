@@ -1,12 +1,7 @@
 import InfiniteLoading from "@/components/infinite-loading";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  EXITED_COLOR,
-  LOADING_STATE,
-  PAUSED_COLOR,
-  RUNNING_COLOR,
-} from "@/constants";
+import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
 import { ColumnDef } from "@tanstack/react-table";
 import { GoContainer } from "react-icons/go";
 import { ImStack } from "react-icons/im";
@@ -15,6 +10,7 @@ import { Compose, DockerPs } from "~types/ps";
 import { Actions } from "./components/actions";
 import { ExpandButton } from "./components/expand-button";
 import { SortableHeader } from "./components/sortable-header";
+import { TableMetadata } from "./data-table";
 import { getStatus } from "./helper";
 
 type TData = Compose | DockerPs;
@@ -162,14 +158,15 @@ export const columns: ColumnDef<TData>[] = [
     accessorFn: (row) => {
       return getStatus(row);
     },
-    cell({ row, column }) {
-      const state = (row.original as DockerPs).State;
+    cell({ row, column, table }) {
+      const { rowsMetadata } = table.options.meta as TableMetadata;
+      const isLoading = rowsMetadata.isRowLoading(row.id);
 
-      return state?.endsWith(LOADING_STATE) ? (
-        <InfiniteLoading width="100px" />
-      ) : (
-        row.getValue(column.id)
-      );
+      if (isLoading) {
+        return <InfiniteLoading width="100px" />;
+      }
+
+      return row.getValue(column.id);
     },
     meta: {
       headerStyle: { width: "20%" },
@@ -184,8 +181,8 @@ export const columns: ColumnDef<TData>[] = [
   },
   {
     accessorKey: "Actions",
-    cell({ row }) {
-      return <Actions row={row} />;
+    cell({ row, table }) {
+      return <Actions row={row} table={table} />;
     },
     meta: {
       headerClass: "text-white",

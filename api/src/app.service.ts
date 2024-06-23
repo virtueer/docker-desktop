@@ -50,4 +50,16 @@ export class AppService {
 
     return { status: true };
   }
+
+  async startPs(id: string) {
+    const command = `docker start ${id}`;
+    const { stderr } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    return { status: true };
+  }
 }

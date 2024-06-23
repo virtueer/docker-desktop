@@ -1,55 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { FaPlay, FaStop } from "react-icons/fa";
-import { DockerPs, GetDockerAllPsResponseSuccess } from "~types/ps";
+import { DockerPs } from "~types/ps";
 
+import { useStartDockerPs } from "@/api/start-docker-ps";
 import { useStopDockerPs } from "@/api/stop-docker-ps";
-import { updateNestedDataByPath } from "@/util";
-import { useQueryClient } from "@tanstack/react-query";
-import { LOADING_STATE } from "@/constants";
+import { TableMetadata } from "@/table/data-table";
+import { Row, Table } from "@tanstack/react-table";
 
 export default function PlayStop({
   isCompose,
   dockerPs,
   running,
+  row,
+  table,
 }: {
   running: boolean;
   isCompose: boolean;
   dockerPs?: DockerPs;
+  row: Row<any>;
+  table: Table<any>;
 }) {
-  const queryClient = useQueryClient();
   const { mutate: stopContainerMutate } = useStopDockerPs(dockerPs!.ID);
+  const { mutate: startContainerMutate } = useStartDockerPs(dockerPs!.ID);
 
-  function makeContainerStateLoading() {
-    queryClient.setQueryData(
-      ["containers"],
-      (oldData: GetDockerAllPsResponseSuccess) => {
-        const index = oldData.data.findIndex((x) => x.ID === dockerPs!.ID);
+  const { rowsMetadata } = table.options.meta as TableMetadata;
 
-        const container = oldData.data[index];
-
-        const newData = updateNestedDataByPath(oldData, ["data", index + ""], {
-          ...container,
-          State: container.State + LOADING_STATE,
-        });
-
-        return newData;
-      }
-    );
-  }
+  const options = {
+    onSuccess() {
+      rowsMetadata.unSetRowMetadataLoading(row.id);
+    },
+  };
 
   function handleStop() {
     if (!isCompose) {
-      stopContainerMutate();
+      stopContainerMutate(undefined, options);
     }
   }
 
   function handlePlay() {
     if (!isCompose) {
-      makeContainerStateLoading();
+      startContainerMutate(undefined, options);
     }
   }
 
   function handleClick() {
+    rowsMetadata.setRowMetadataLoading(row.id);
     running ? handleStop() : handlePlay();
   }
 
@@ -58,6 +53,7 @@ export default function PlayStop({
       variant="ghost"
       className="p-2 rounded-full h-auto hover:bg-slate-300"
       onClick={handleClick}
+      disabled={rowsMetadata.isRowLoading(row.id)}
     >
       {running && <FaStop />}
       {!running && <FaPlay />}

@@ -21,9 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { Compose } from "~types/ps";
-import { cn } from "@/lib/utils";
+import { useTableRowsMetadata } from "./metadata";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -83,6 +84,10 @@ function CustomTableHead({ header }: { header: Header<any, unknown> }) {
   );
 }
 
+export type TableMetadata = {
+  rowsMetadata: ReturnType<typeof useTableRowsMetadata>;
+};
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -90,6 +95,12 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({});
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const rowsMetadata = useTableRowsMetadata();
+
+  const meta: TableMetadata = {
+    rowsMetadata,
+  };
 
   const table = useReactTable({
     data,
@@ -106,6 +117,7 @@ export function DataTable<TData, TValue>({
       expanded,
       sorting,
     },
+    meta,
   });
 
   return (

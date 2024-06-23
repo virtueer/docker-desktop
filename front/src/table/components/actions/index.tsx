@@ -26,10 +26,10 @@ import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
 import { Compose, DockerPs } from "~types/ps";
 
-import { Row } from "@tanstack/react-table";
+import { Row, Table } from "@tanstack/react-table";
 import PlayStop from "./play-stop";
 
-export function Actions({ row }: { row: Row<any> }) {
+export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
   const status = getStatus(row.original);
 
   const isCompose = !!(row.original as any).name;
@@ -48,7 +48,13 @@ export function Actions({ row }: { row: Row<any> }) {
 
   return (
     <div className="flex gap-0.5">
-      <PlayStop isCompose={isCompose} running={running} dockerPs={dockerPs} />
+      <PlayStop
+        isCompose={isCompose}
+        running={running}
+        dockerPs={dockerPs}
+        row={row}
+        table={table}
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

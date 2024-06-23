@@ -3,16 +3,16 @@ import { StatusResponse } from "~types/ps";
 import { api } from "../axios";
 import { getDockerPsWrapper } from "./get-docker-ps";
 
-async function stopDockerPs(id: string) {
-  const response = await api.delete<StatusResponse>(`/ps/${id}`);
+async function startDockerPs(id: string) {
+  const response = await api.post<StatusResponse>(`/ps/${id}`);
   return response.data;
 }
 
-export const useStopDockerPs = (id: string) => {
+export const useStartDockerPs = (id: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => stopDockerPs(id),
+    mutationFn: () => startDockerPs(id),
     onSuccess() {
       getDockerPsWrapper(queryClient, id, true);
     },

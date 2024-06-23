@@ -3,8 +3,6 @@ import {
   DockerPs,
   GetDockerAllPsResponse,
   GetDockerAllPsResponseSuccess,
-  GetDockerPsResponse,
-  GetDockerPsResponseSuccess,
 } from "~types/ps";
 
 export function toPascalCase(text: string) {
