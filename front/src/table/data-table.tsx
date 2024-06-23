@@ -32,6 +32,7 @@ import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Compose } from "~types/ps";
 import { useTableRowsMetadata } from "./metadata";
+import SelectedActions from "./selected-actions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -129,31 +130,35 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md">
-      <div className="flex items-center mb-5 gap-5">
-        <div className="flex items-center  px-3 border rounded w-fit">
-          <FaSearch />
-          <Input
-            placeholder="Search"
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(String(e.target.value))}
-            className="border-none w-[300px]"
-            style={{ boxShadow: "none" }}
-          />
+    <div>
+      <div className="flex items-center justify-between mb-5 gap-5">
+        <div className="flex gap-5">
+          <div className="flex items-center  px-3 border rounded w-fit">
+            <FaSearch />
+            <Input
+              placeholder="Search"
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(String(e.target.value))}
+              className="border-none w-[300px]"
+              style={{ boxShadow: "none" }}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch
+              onCheckedChange={(value) => {
+                setColumnFilters(
+                  value ? [{ id: "select", value: "running" }] : []
+                );
+              }}
+            />
+            Only show running containers
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Switch
-            onCheckedChange={(value) => {
-              setColumnFilters(
-                value ? [{ id: "select", value: "running" }] : []
-              );
-            }}
-            className="dark"
-          />
-          Only show running containers
-        </div>
+        {table.getSelectedRowModel().rows.length !== 0 && (
+          <SelectedActions table={table} />
+        )}
       </div>
-      <Table className="dark">
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

@@ -5,17 +5,15 @@ import { Compose, DockerPs } from "~types/ps";
 import { useStartDockerPs } from "@/api/start-docker-ps";
 import { useStopDockerPs } from "@/api/stop-docker-ps";
 import { TableMetadata } from "@/table/data-table";
-import { getStatus } from "@/table/helper";
 import { Row, Table } from "@tanstack/react-table";
+import { useUnpauseDockerPs } from "@/api/unpause-docker-ps";
 
 export default function PlayStop({
   isCompose,
   dockerPs,
-  running,
   row,
   table,
 }: {
-  running: boolean;
   isCompose: boolean;
   dockerPs?: DockerPs;
   row: Row<any>;
@@ -23,22 +21,29 @@ export default function PlayStop({
 }) {
   const { mutateAsync: stopContainerMutate } = useStopDockerPs();
   const { mutateAsync: startContainerMutate } = useStartDockerPs();
+  const { mutateAsync: unPauseContainerMutate } = useUnpauseDockerPs();
 
   const { rowsMetadata } = table.options.meta as TableMetadata;
+  const state = (row.original as DockerPs).State;
+  const running = state === "running";
+  const allRunning = (row.original as Compose).containers?.find(
+    (x) => x.State !== "running"
+  );
 
   async function handleStop(containerId: string, rowId: string) {
     await stopContainerMutate(containerId);
     rowsMetadata.unSetRowMetadataLoading(rowId);
   }
 
-  async function handlePlay(containerId: string, rowId: string) {
-    startContainerMutate(containerId);
+  async function handlePlay(containerId: string, rowId: string, state: string) {
+    if (state === "paused") unPauseContainerMutate(containerId);
+    else startContainerMutate(containerId);
     rowsMetadata.unSetRowMetadataLoading(rowId);
   }
 
-  function startContainer() {
+  function startContainer(state: string) {
     rowsMetadata.setRowMetadataLoading(row.id);
-    handlePlay(dockerPs!.ID, row.id);
+    handlePlay(dockerPs!.ID, row.id, state);
   }
 
   function stopContainer() {
@@ -57,8 +62,7 @@ export default function PlayStop({
       return {};
     }
 
-    const status = getStatus(row.original);
-    const started = status.startsWith("Up") || status.startsWith("Running");
+    const started = (row.original as DockerPs).State === "running";
 
     return { started, row };
   }
@@ -81,15 +85,16 @@ export default function PlayStop({
       if (!row || started) continue;
 
       rowsMetadata.setRowMetadataLoading(row.id);
-      handlePlay(container.ID, row.id);
+      handlePlay(container.ID, row.id, row.original.State);
     }
   }
 
   function handleClick() {
+    console.log(isCompose, running, allRunning);
     if (!isCompose && running) stopContainer();
-    if (!isCompose && !running) startContainer();
-    if (isCompose && running) stopCompose();
-    if (isCompose && !running) startCompose();
+    if (!isCompose && !running) startContainer(state);
+    if (isCompose && allRunning) startCompose();
+    if (isCompose && !allRunning) stopCompose();
   }
 
   return (
@@ -99,8 +104,10 @@ export default function PlayStop({
       onClick={handleClick}
       disabled={rowsMetadata.isRowLoading(row.id)}
     >
-      {running && <FaStop />}
-      {!running && <FaPlay />}
+      {isCompose && allRunning && <FaPlay />}
+      {isCompose && !allRunning && <FaStop />}
+      {!isCompose && running && <FaStop />}
+      {!isCompose && !running && <FaPlay />}
     </Button>
   );
 }

@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { getStatus } from "@/table/helper";
 import { FaTrash } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
@@ -30,13 +29,9 @@ import { Row, Table } from "@tanstack/react-table";
 import PlayStop from "./play-stop";
 
 export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
-  const status = getStatus(row.original);
-
   const isCompose = !!(row.original as any).name;
   const dockerPs = row.original as DockerPs;
   const compose = row.original as Compose;
-
-  const running = status.startsWith("Up") || status.startsWith("Running");
 
   const alertDialogTitle = compose.name
     ? "Delete compose project?"
@@ -50,7 +45,6 @@ export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
     <div className="flex gap-0.5">
       <PlayStop
         isCompose={isCompose}
-        running={running}
         dockerPs={dockerPs}
         row={row}
         table={table}

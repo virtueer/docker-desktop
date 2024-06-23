@@ -18,9 +18,13 @@ export class EventsGateway implements OnApplicationBootstrap {
       const lines = data.trim().split(/\r?\n/);
 
       for (const line of lines) {
+        const string = line.trim();
+
+        if (!string) continue;
+
         for (const [, socket] of this.server.sockets.sockets) {
           try {
-            socket.emit('events', JSON.parse(line));
+            socket.emit('events', JSON.parse(string));
           } catch (error) {
             console.log(error);
             console.log('ERROR JSON -->', line, '<--');

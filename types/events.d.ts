@@ -1,7 +1,13 @@
-export type Events = StartContainerAction | StopContainerAction;
+export type Events =
+  | StartContainerAction
+  | StopContainerAction
+  | PauseContainerAction
+  | UnpauseContainerAction;
 
 export type StartContainerAction = { Action: "start" } & ContainerAction;
 export type StopContainerAction = { Action: "stop" } & ContainerAction;
+export type PauseContainerAction = { Action: "pause" } & ContainerAction;
+export type UnpauseContainerAction = { Action: "unpause" } & ContainerAction;
 
 export interface ContainerAction {
   Actor: Actor;

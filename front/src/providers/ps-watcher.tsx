@@ -20,6 +20,14 @@ export default function PsWatcher() {
           getDockerPsWrapper(queryClient, data.id, true);
           break;
 
+        case "pause":
+          getDockerPsWrapper(queryClient, data.id, true);
+          break;
+
+        case "unpause":
+          getDockerPsWrapper(queryClient, data.id, true);
+          break;
+
         default:
           break;
       }

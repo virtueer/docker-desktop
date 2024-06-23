@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -19,6 +27,16 @@ export class AppController {
   @Delete('/ps/:id')
   stopPs(@Param('id') id: string) {
     return this.appService.stopPs(id);
+  }
+
+  @Put('/ps/:id/pause')
+  pausePs(@Param('id') id: string) {
+    return this.appService.pausePs(id);
+  }
+
+  @Put('/ps/:id/unpause')
+  unPausePs(@Param('id') id: string) {
+    return this.appService.unPausePs(id);
   }
 
   @Post('/ps/:id')

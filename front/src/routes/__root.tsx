@@ -14,7 +14,7 @@ export const Route = createRootRoute({
 function RootPage() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-w-screen min-h-screen bg-[#161e22] text-white">
+      <div className="min-w-screen min-h-screen bg-[#161e22] text-white dark">
         <Outlet />
         <Toaster />
       </div>
