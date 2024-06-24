@@ -33,11 +33,11 @@ export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
   const dockerPs = row.original as DockerPs;
   const compose = row.original as Compose;
 
-  const alertDialogTitle = compose.name
+  const alertDialogTitle = isCompose
     ? "Delete compose project?"
     : "Delete container?";
 
-  const alertDialogDescription = compose.name
+  const alertDialogDescription = isCompose
     ? `The '${compose.name}' compose project is selected for deletion.`
     : `The '${dockerPs.Names}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
 
@@ -98,7 +98,7 @@ export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
             <FaTrash />
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="dark text-white">
           <AlertDialogHeader>
             <AlertDialogTitle>{alertDialogTitle}</AlertDialogTitle>
             <AlertDialogDescription>
@@ -107,7 +107,7 @@ export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-500">
+            <AlertDialogAction className="bg-red-600 hover:bg-red-500 text-white">
               Delete forever
             </AlertDialogAction>
           </AlertDialogFooter>

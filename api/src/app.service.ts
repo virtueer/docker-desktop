@@ -138,4 +138,16 @@ export class AppService {
 
     return { status: true, data: text2json(stdout) };
   }
+
+  async deleteContainer(id: string) {
+    const command = `docker container rm ${id} -f`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    return { status: true, data: stdout };
+  }
 }

@@ -63,4 +63,9 @@ export class AppController {
   volumes() {
     return this.appService.volumes();
   }
+
+  @Delete('/container/:id')
+  deleteContainer(@Param('id') id: string) {
+    return this.appService.deleteContainer(id);
+  }
 }

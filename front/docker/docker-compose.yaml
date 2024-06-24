@@ -11,3 +11,8 @@ services:
     scale: 2
   serv4:
     image: nginx
+    volumes:
+      - nginx_volume:/usr/share/nginx/html
+
+volumes:
+  nginx_volume:

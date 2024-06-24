@@ -1,3 +1,4 @@
+import { usePauseDockerPs } from "@/api/pause-docker-ps";
 import { useStartDockerPs } from "@/api/start-docker-ps";
 import { useStopDockerPs } from "@/api/stop-docker-ps";
 import { useUnpauseDockerPs } from "@/api/unpause-docker-ps";
@@ -5,32 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { FaPause, FaPlay, FaStop } from "react-icons/fa";
 import { DockerPs } from "~types/ps";
-import { TableMetadata } from "./data-table";
-import { usePauseDockerPs } from "@/api/pause-docker-ps";
+import { TableMetadata } from "../data-table";
 
-export default function SelectedActions({ table }: { table: Table<any> }) {
+export default function Actions({ table }: { table: Table<any> }) {
   const flatRows = table.getSelectedRowModel().flatRows;
   if (flatRows.length === 0) return;
 
-  const containerFlatRows = flatRows.filter(
-    (x) => x.original.name === undefined
-  );
+  const rows = flatRows.filter((x) => x.original.name === undefined);
 
   const startDisabled =
-    containerFlatRows.filter(
-      (x) => (x.original as DockerPs).State !== "running"
-    ).length === 0;
+    rows.filter((x) => (x.original as DockerPs).State !== "running").length ===
+    0;
 
   const pauseDisabled =
-    containerFlatRows.filter(
+    rows.filter(
       (x) =>
         (x.original as DockerPs).State !== "paused" &&
         (x.original as DockerPs).State !== "exited"
     ).length === 0;
 
   const stopDisabled =
-    containerFlatRows.filter((x) => (x.original as DockerPs).State !== "exited")
-      .length === 0;
+    rows.filter((x) => (x.original as DockerPs).State !== "exited").length ===
+    0;
 
   const { mutateAsync: stopContainerMutate } = useStopDockerPs();
   const { mutateAsync: startContainerMutate } = useStartDockerPs();
@@ -39,7 +36,7 @@ export default function SelectedActions({ table }: { table: Table<any> }) {
   const { rowsMetadata } = table.options.meta as TableMetadata;
 
   async function handleStart() {
-    for (const containerFlatRow of containerFlatRows) {
+    for (const containerFlatRow of rows) {
       const container = containerFlatRow.original as DockerPs;
       const running = container.State === "running";
 
@@ -65,7 +62,7 @@ export default function SelectedActions({ table }: { table: Table<any> }) {
   }
 
   async function handleStop() {
-    for (const containerFlatRow of containerFlatRows) {
+    for (const containerFlatRow of rows) {
       const container = containerFlatRow.original as DockerPs;
       const stopped = container.State === "exited";
 
@@ -81,7 +78,7 @@ export default function SelectedActions({ table }: { table: Table<any> }) {
   }
 
   async function handlePause() {
-    for (const containerFlatRow of containerFlatRows) {
+    for (const containerFlatRow of rows) {
       const container = containerFlatRow.original as DockerPs;
       const running = container.State === "running";
 
@@ -97,34 +94,28 @@ export default function SelectedActions({ table }: { table: Table<any> }) {
   }
 
   return (
-    <div className="flex gap-5 items-center">
-      <Button variant="destructive" disabled>
-        Delete
+    <div className="bg-blue-600 rounded text-white">
+      <Button
+        className="bg-inherit text-inherit hover:bg-blue-400 rounded-r-none"
+        disabled={startDisabled}
+        onClick={handleStart}
+      >
+        <FaPlay />
       </Button>
-
-      <div className="bg-blue-600 rounded text-white">
-        <Button
-          className="bg-inherit text-inherit hover:bg-blue-400 rounded-r-none"
-          disabled={startDisabled}
-          onClick={handleStart}
-        >
-          <FaPlay />
-        </Button>
-        <Button
-          className="bg-inherit text-inherit hover:bg-blue-400 rounded-none border-x"
-          disabled={pauseDisabled}
-          onClick={handlePause}
-        >
-          <FaPause />
-        </Button>
-        <Button
-          className="bg-inherit text-inherit hover:bg-blue-400 rounded-l-none"
-          disabled={stopDisabled}
-          onClick={handleStop}
-        >
-          <FaStop />
-        </Button>
-      </div>
+      <Button
+        className="bg-inherit text-inherit hover:bg-blue-400 rounded-none border-x"
+        disabled={pauseDisabled}
+        onClick={handlePause}
+      >
+        <FaPause />
+      </Button>
+      <Button
+        className="bg-inherit text-inherit hover:bg-blue-400 rounded-l-none"
+        disabled={stopDisabled}
+        onClick={handleStop}
+      >
+        <FaStop />
+      </Button>
     </div>
   );
 }

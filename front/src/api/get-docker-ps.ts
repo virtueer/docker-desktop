@@ -1,7 +1,7 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../axios";
 import { GetDockerPsResponse } from "~types/ps";
-import { updateContainerById } from "@/util";
+import { createContainer, updateContainerById } from "@/util";
 
 async function getDockerPs(id: string) {
   const response = await api.get<GetDockerPsResponse>(`/ps/${id}`);
@@ -11,7 +11,8 @@ async function getDockerPs(id: string) {
 export async function getDockerPsWrapper(
   queryClient: QueryClient,
   id: string,
-  update = false
+  update = false,
+  upsert = false
 ) {
   const response = await getDockerPs(id);
 
@@ -21,6 +22,10 @@ export async function getDockerPsWrapper(
 
   if (update) {
     updateContainerById(queryClient, id, response.data);
+  }
+
+  if (upsert) {
+    createContainer(queryClient, response.data);
   }
 
   return response;

@@ -118,3 +118,37 @@ export const getContainerById = (queryClient: QueryClient, id: string) => {
 
   return data.data.find((x) => x.ID === id);
 };
+
+export const deleteContainerById = (queryClient: QueryClient, id: string) => {
+  queryClient.setQueryData(
+    ["containers"],
+    (oldData: GetDockerAllPsResponseSuccess) => {
+      const index = oldData.data.findIndex((x) => x.ID === id);
+
+      const newContainers = [
+        ...oldData.data.slice(0, index),
+        ...oldData.data.slice(index + 1),
+      ];
+
+      const newData = updateNestedDataByPath(oldData, ["data"], newContainers);
+
+      return newData;
+    }
+  );
+};
+
+export const createContainer = (
+  queryClient: QueryClient,
+  container: Partial<DockerPs>
+) => {
+  queryClient.setQueryData(
+    ["containers"],
+    (oldData: GetDockerAllPsResponseSuccess) => {
+      const newContainers = [...oldData.data, container];
+
+      const newData = updateNestedDataByPath(oldData, ["data"], newContainers);
+
+      return newData;
+    }
+  );
+};

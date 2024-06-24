@@ -35,9 +35,35 @@ export const columns: ColumnDef<TData>[] = [
     cell: ({ row }) => {
       return (
         <Checkbox
-          checked={row.getIsSelected()}
+          checked={
+            row.getIsSelected()
+            // row.subRows.length !== 0
+            //   ? row.getIsAllSubRowsSelected()
+            //   : row.getIsSelected()
+          }
           className="border-white"
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            // if (row.subRows.length === 0 && !row.parentId) {
+            //   return row.toggleSelected(!!value);
+            // }
+
+            // row.toggleSelected(!!value);
+            // for (const subRow of row.subRows) {
+            //   subRow.toggleSelected(!!value);
+            // }
+
+            // setTimeout(() => {
+            //   const parent = row.getParentRow();
+            //   console.log(
+            //     "parent.getIsAllSubRowsSelected()",
+            //     parent?.getIsAllSubRowsSelected()
+            //   );
+            //   parent?.toggleSelected(parent.getIsAllSubRowsSelected(), {
+            //     selectChildren: false,
+            //   });
+            // }, 0);
+          }}
           aria-label="Select row"
         />
       );
