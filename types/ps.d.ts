@@ -3,9 +3,9 @@ export interface StatusResponse {
 }
 export type GetDockerAllPsResponse =
   | GetDockerAllPsResponseSuccess
-  | GetDockerAllPsResponseFail;
+  | FailResponse;
 
-export interface GetDockerAllPsResponseFail extends StatusResponse {
+export interface FailResponse extends StatusResponse {
   status: false;
   error: string;
 }

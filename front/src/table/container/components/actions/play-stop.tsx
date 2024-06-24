@@ -4,7 +4,7 @@ import { Compose, DockerPs } from "~types/ps";
 
 import { useStartDockerPs } from "@/api/start-docker-ps";
 import { useStopDockerPs } from "@/api/stop-docker-ps";
-import { TableMetadata } from "@/table/data-table";
+import { TableMetadata } from "@/table/container/data-table";
 import { Row, Table } from "@tanstack/react-table";
 import { useUnpauseDockerPs } from "@/api/unpause-docker-ps";
 

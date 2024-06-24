@@ -48,4 +48,9 @@ export class AppController {
   images() {
     return this.appService.images();
   }
+
+  @Get('/volume')
+  volumes() {
+    return this.appService.volumes();
+  }
 }

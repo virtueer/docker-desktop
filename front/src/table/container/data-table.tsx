@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
+import { rankItem } from "@tanstack/match-sorter-utils";
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Compose } from "~types/ps";
@@ -42,16 +42,6 @@ interface DataTableProps<TData, TValue> {
 export type TableMetadata = {
   rowsMetadata: ReturnType<typeof useTableRowsMetadata>;
 };
-
-declare module "@tanstack/react-table" {
-  //add fuzzy filter to the filterFns
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>;
-  }
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
-}
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   for (const subRow of row.subRows) {
@@ -118,6 +108,7 @@ export function DataTable<TData, TValue>({
     filterFns: {
       fuzzy: fuzzyFilter,
     },
+    //@ts-ignore
     globalFilterFn: "fuzzy",
     state: {
       rowSelection,

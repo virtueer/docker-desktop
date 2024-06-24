@@ -1,8 +1,8 @@
 import { useGetDockerAllPs } from "@/api/get-docker-all-ps";
 import InfiniteLoading from "@/components/infinite-loading";
 import PsWatcher from "@/providers/ps-watcher";
-import { columns } from "@/table/columns";
-import { DataTable } from "@/table/data-table";
+import { columns } from "@/table/container/columns";
+import { DataTable } from "@/table/container/data-table";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { DockerPs } from "~types/ps";
