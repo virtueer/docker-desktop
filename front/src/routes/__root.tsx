@@ -4,6 +4,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 // import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Sidebar from "@/components/sidebar";
 
 const queryClient = new QueryClient();
 
@@ -14,8 +15,11 @@ export const Route = createRootRoute({
 function RootPage() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-w-screen min-h-screen bg-[#161e22] text-white dark">
-        <Outlet />
+      <div className="min-w-screen min-h-screen bg-[#161e22] text-white dark flex">
+        <Sidebar />
+        <div className="w-full p-5">
+          <Outlet />
+        </div>
         <Toaster />
       </div>
       {/* <TanStackRouterDevtools /> */}

@@ -43,4 +43,9 @@ export class AppController {
   startPs(@Param('id') id: string) {
     return this.appService.startPs(id);
   }
+
+  @Get('/image')
+  images() {
+    return this.appService.images();
+  }
 }

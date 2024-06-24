@@ -12,7 +12,9 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as WatchIndexImport } from './routes/watch/index'
+import { Route as VolumesIndexImport } from './routes/volumes/index'
 import { Route as PsIndexImport } from './routes/ps/index'
+import { Route as ImagesIndexImport } from './routes/images/index'
 
 // Create/Update Routes
 
@@ -21,8 +23,18 @@ const WatchIndexRoute = WatchIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const VolumesIndexRoute = VolumesIndexImport.update({
+  path: '/volumes/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const PsIndexRoute = PsIndexImport.update({
   path: '/ps/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ImagesIndexRoute = ImagesIndexImport.update({
+  path: '/images/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -30,11 +42,25 @@ const PsIndexRoute = PsIndexImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/images/': {
+      id: '/images/'
+      path: '/images'
+      fullPath: '/images'
+      preLoaderRoute: typeof ImagesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/ps/': {
       id: '/ps/'
       path: '/ps'
       fullPath: '/ps'
       preLoaderRoute: typeof PsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/volumes/': {
+      id: '/volumes/'
+      path: '/volumes'
+      fullPath: '/volumes'
+      preLoaderRoute: typeof VolumesIndexImport
       parentRoute: typeof rootRoute
     }
     '/watch/': {
@@ -50,7 +76,9 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
+  ImagesIndexRoute,
   PsIndexRoute,
+  VolumesIndexRoute,
   WatchIndexRoute,
 })
 
@@ -62,12 +90,20 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/images/",
         "/ps/",
+        "/volumes/",
         "/watch/"
       ]
     },
+    "/images/": {
+      "filePath": "images/index.tsx"
+    },
     "/ps/": {
       "filePath": "ps/index.tsx"
+    },
+    "/volumes/": {
+      "filePath": "volumes/index.tsx"
     },
     "/watch/": {
       "filePath": "watch/index.tsx"

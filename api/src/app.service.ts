@@ -86,4 +86,16 @@ export class AppService {
 
     return { status: true };
   }
+
+  async images() {
+    const command = `docker image ls --no-trunc --format json`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    return { status: true, data: text2json(stdout) };
+  }
 }
