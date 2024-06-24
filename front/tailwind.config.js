@@ -18,6 +18,18 @@ module.exports = {
     },
     extend: {
       colors: {
+        night: {
+          "50": "#d4d7d9",
+          "100": "#a9afb3",
+          "200": "#7f878d",
+          "300": "#555f66",
+          "400": "#2a373f",
+          "500": "#161e22",
+          "600": "#12181c",
+          "700": "#0e1216",
+          "800": "#0a0c10",
+          "900": "#060608"
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

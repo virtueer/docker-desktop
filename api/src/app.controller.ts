@@ -49,6 +49,16 @@ export class AppController {
     return this.appService.images();
   }
 
+  @Get('/image/:id')
+  image(@Param('id') id: string) {
+    return this.appService.image(id);
+  }
+
+  @Get('/image/name/:name')
+  getImageByImageName(@Param('name') name: string) {
+    return this.appService.getImageByImageName(name);
+  }
+
   @Get('/volume')
   volumes() {
     return this.appService.volumes();

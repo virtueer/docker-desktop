@@ -15,6 +15,7 @@ import { Route as WatchIndexImport } from './routes/watch/index'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
 import { Route as PsIndexImport } from './routes/ps/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
+import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
 
 // Create/Update Routes
 
@@ -35,6 +36,11 @@ const PsIndexRoute = PsIndexImport.update({
 
 const ImagesIndexRoute = ImagesIndexImport.update({
   path: '/images/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ImagesIdIndexRoute = ImagesIdIndexImport.update({
+  path: '/images/$id/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -70,6 +76,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchIndexImport
       parentRoute: typeof rootRoute
     }
+    '/images/$id/': {
+      id: '/images/$id/'
+      path: '/images/$id'
+      fullPath: '/images/$id'
+      preLoaderRoute: typeof ImagesIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -80,6 +93,7 @@ export const routeTree = rootRoute.addChildren({
   PsIndexRoute,
   VolumesIndexRoute,
   WatchIndexRoute,
+  ImagesIdIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -93,7 +107,8 @@ export const routeTree = rootRoute.addChildren({
         "/images/",
         "/ps/",
         "/volumes/",
-        "/watch/"
+        "/watch/",
+        "/images/$id/"
       ]
     },
     "/images/": {
@@ -107,6 +122,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/watch/": {
       "filePath": "watch/index.tsx"
+    },
+    "/images/$id/": {
+      "filePath": "images/$id/index.tsx"
     }
   }
 }

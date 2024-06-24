@@ -88,7 +88,7 @@ export class AppService {
   }
 
   async images() {
-    const command = `docker image ls --no-trunc --format json`;
+    const command = `docker image ls --no-trunc --digests --format json`;
     const { stderr, stdout } = await exec(command);
 
     if (stderr) {
@@ -97,6 +97,34 @@ export class AppService {
     }
 
     return { status: true, data: text2json(stdout) };
+  }
+
+  async image(id: string) {
+    const command = `docker image history ${id} --no-trunc --format json`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    return { status: true, data: text2json(stdout).reverse() };
+  }
+
+  async getImageByImageName(name: string) {
+    const command = `docker images --no-trunc --filter=reference='${name}' --format json`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr);
+      return { status: false, error: stderr };
+    }
+
+    if (!stdout) {
+      return { status: false, error: 'Not found' };
+    }
+
+    return { status: true, data: text2json(stdout)[0] };
   }
 
   async volumes() {

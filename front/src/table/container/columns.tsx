@@ -12,6 +12,7 @@ import { ExpandButton } from "./components/expand-button";
 import { SortableHeader } from "./components/sortable-header";
 import { TableMetadata } from "./data-table";
 import { getStatus } from "./helper";
+import { Link } from "@tanstack/react-router";
 
 type TData = Compose | DockerPs;
 
@@ -124,7 +125,7 @@ export const columns: ColumnDef<TData>[] = [
             <span className="underline underline-offset-4">{name}</span>
             {(row.original as DockerPs).ID && (
               <span
-                className="flex gap-1 items-center text-white text-xs"
+                className="flex gap-1 items-center text-white text-xs w-fit"
                 onClick={() =>
                   navigator.clipboard.writeText((row.original as DockerPs).ID)
                 }
@@ -152,6 +153,19 @@ export const columns: ColumnDef<TData>[] = [
     accessorFn: (row) => (row as DockerPs)?.Image,
     header({ column }) {
       return <SortableHeader name="Image" column={column} />;
+    },
+    cell({ row, getValue }) {
+      const data = row.original as DockerPs;
+
+      const id =
+        data.Labels?.["com.docker.compose.image"]?.replace("sha256:", "") ||
+        data.Image;
+
+      return (
+        <Link to="/images/$id" params={{ id }}>
+          {getValue() as string}
+        </Link>
+      );
     },
     meta: {
       headerStyle: { width: "20%" },

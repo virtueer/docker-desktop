@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdContentCopy } from "react-icons/md";
 import { Image } from "~types/image";
+import { Link } from "@tanstack/react-router";
 
 type TData = Image;
 
@@ -40,11 +41,18 @@ export const columns: ColumnDef<TData>[] = [
       const ID = row.original.ID.replace("sha256:", "");
 
       return (
-        <div className="flex flex-col gap-1 text-blue-500 font-bold cursor-pointer">
+        <Link
+          className="flex flex-col gap-1 h-[50px] justify-center text-blue-500 font-bold cursor-pointer px-1 hover:bg-slate-700"
+          to="/images/$id"
+          params={{ id: ID }}
+        >
           <span className="underline underline-offset-4">{value}</span>
           <span
-            className="flex gap-1 items-center text-white text-xs"
-            onClick={() => navigator.clipboard.writeText(ID)}
+            className="flex gap-1 items-center text-white text-xs w-fit"
+            onClick={(e) => {
+              e.preventDefault();
+              navigator.clipboard.writeText(ID);
+            }}
           >
             {ID.slice(0, 12)}
             <Button
@@ -54,8 +62,11 @@ export const columns: ColumnDef<TData>[] = [
               <MdContentCopy />
             </Button>
           </span>
-        </div>
+        </Link>
       );
+    },
+    meta: {
+      cellClass: "p-0",
     },
   },
   {
@@ -68,5 +79,8 @@ export const columns: ColumnDef<TData>[] = [
   {
     accessorKey: "VirtualSize",
     header: "Size",
+    cell({ getValue }) {
+      return (getValue() as string).replace(/(\d+\.?\d*)([A-Za-z]+)/, "$1 $2"); // 1.21GB -> 1.21 GB
+    },
   },
 ];

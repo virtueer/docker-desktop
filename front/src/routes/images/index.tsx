@@ -1,4 +1,4 @@
-import { useGetImages } from "@/api/get-image-all";
+import { useGetImages } from "@/api/get-images";
 import { columns } from "@/table/image/columns";
 import ImageTable from "@/table/image/data-table";
 import { createFileRoute } from "@tanstack/react-router";
