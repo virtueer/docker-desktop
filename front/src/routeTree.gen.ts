@@ -15,6 +15,7 @@ import { Route as WatchIndexImport } from './routes/watch/index'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
 import { Route as PsIndexImport } from './routes/ps/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
+import { Route as ComposeNameImport } from './routes/compose/$name'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
 
 // Create/Update Routes
@@ -39,6 +40,11 @@ const ImagesIndexRoute = ImagesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ComposeNameRoute = ComposeNameImport.update({
+  path: '/compose/$name',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ImagesIdIndexRoute = ImagesIdIndexImport.update({
   path: '/images/$id/',
   getParentRoute: () => rootRoute,
@@ -48,6 +54,13 @@ const ImagesIdIndexRoute = ImagesIdIndexImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/compose/$name': {
+      id: '/compose/$name'
+      path: '/compose/$name'
+      fullPath: '/compose/$name'
+      preLoaderRoute: typeof ComposeNameImport
+      parentRoute: typeof rootRoute
+    }
     '/images/': {
       id: '/images/'
       path: '/images'
@@ -89,6 +102,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
+  ComposeNameRoute,
   ImagesIndexRoute,
   PsIndexRoute,
   VolumesIndexRoute,
@@ -104,12 +118,16 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/compose/$name",
         "/images/",
         "/ps/",
         "/volumes/",
         "/watch/",
         "/images/$id/"
       ]
+    },
+    "/compose/$name": {
+      "filePath": "compose/$name.tsx"
     },
     "/images/": {
       "filePath": "images/index.tsx"

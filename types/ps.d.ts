@@ -1,14 +1,8 @@
-export interface StatusResponse {
-  status: boolean;
-}
+import { FailResponse, StatusResponse } from "./base";
+
 export type GetDockerAllPsResponse =
   | GetDockerAllPsResponseSuccess
   | FailResponse;
-
-export interface FailResponse extends StatusResponse {
-  status: false;
-  error: string;
-}
 
 export interface GetDockerAllPsResponseSuccess extends StatusResponse {
   status: true;

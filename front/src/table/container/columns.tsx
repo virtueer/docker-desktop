@@ -11,7 +11,7 @@ import { Actions } from "./components/actions";
 import { ExpandButton } from "./components/expand-button";
 import { SortableHeader } from "./components/sortable-header";
 import { TableMetadata } from "./data-table";
-import { getStatus } from "./helper";
+import { getContainerColor, getStatus } from "./helper";
 import { Link } from "@tanstack/react-router";
 
 type TData = Compose | DockerPs;
@@ -102,20 +102,7 @@ export const columns: ColumnDef<TData>[] = [
 
       const isCompose = !!(row.original as Compose).name;
 
-      let containerIconColor = "";
-      switch (true) {
-        case (row.original as DockerPs).State?.startsWith("paused"):
-          containerIconColor = PAUSED_COLOR;
-          break;
-
-        case (row.original as DockerPs).State?.startsWith("exited"):
-          containerIconColor = EXITED_COLOR;
-          break;
-
-        case (row.original as DockerPs).State?.startsWith("running"):
-          containerIconColor = RUNNING_COLOR;
-          break;
-      }
+      let containerIconColor = getContainerColor(row.original as DockerPs);
 
       let composeIconColor = "";
       const status = getStatus(row.original);

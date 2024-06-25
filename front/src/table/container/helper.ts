@@ -1,5 +1,6 @@
 import { Compose, DockerPs } from "~types/ps";
 import { toPascalCase } from "@/util";
+import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
 
 export const getStatus = (row: Compose | DockerPs) => {
   const isCompose = !!(row as any).name;
@@ -29,4 +30,20 @@ export const getStatus = (row: Compose | DockerPs) => {
   }
 
   return (row as DockerPs).Status;
+};
+
+export const getContainerColor = (constainer: DockerPs) => {
+  switch (constainer.State) {
+    case "paused":
+      return PAUSED_COLOR;
+      break;
+
+    case "exited":
+      return EXITED_COLOR;
+      break;
+
+    case "running":
+      return RUNNING_COLOR;
+      break;
+  }
 };

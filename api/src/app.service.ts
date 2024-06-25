@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as pty from 'node-pty';
 import {
   DockerPs,
   GetDockerAllPsResponse,
@@ -149,5 +150,69 @@ export class AppService {
     }
 
     return { status: true, data: stdout };
+  }
+
+  async compose(name: string) {
+    const command = `docker ps -a --no-trunc --format '{{ json . }}'`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr, '---');
+      return { status: false, error: stderr };
+    }
+
+    const ps = text2json(stdout).map(parseLabels) as any as DockerPs[];
+
+    const composes = ps.filter(
+      (x) => x.Labels['com.docker.compose.project'] === name,
+    );
+
+    return {
+      status: true,
+      data: composes,
+    };
+  }
+
+  async getContainerLogs(id: string) {
+    const command = `docker logs ${id}`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr, '---');
+      return { status: false, error: stderr };
+    }
+
+    return {
+      status: true,
+      data: stdout,
+    };
+  }
+
+  async getComposeLogs(name: string, cols?: number, rows?: number) {
+    const composes = await this.compose(name);
+
+    if (composes.data.length === 0) {
+      return { status: false, error: 'Not found' };
+    }
+
+    console.log(cols, rows);
+    const terminal = pty.spawn('docker', ['compose', 'logs', '-t'], {
+      name: 'logs',
+      cwd: composes.data[0].Labels['com.docker.compose.project.working_dir'],
+      cols,
+      rows,
+    });
+
+    console.log('Command ->', 'docker compose logs');
+    const data = await new Promise((resolve) => {
+      let total = '';
+      terminal.onExit(() => resolve(total));
+      terminal.onData((data) => (total += data));
+    });
+
+    return {
+      status: true,
+      data,
+    };
   }
 }

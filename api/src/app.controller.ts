@@ -4,8 +4,10 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -67,5 +69,24 @@ export class AppController {
   @Delete('/container/:id')
   deleteContainer(@Param('id') id: string) {
     return this.appService.deleteContainer(id);
+  }
+
+  @Get('/compose/:name')
+  compose(@Param('name') name: string) {
+    return this.appService.compose(name);
+  }
+
+  @Get('/compose/:name/logs')
+  getComposeLogs(
+    @Param('name') name: string,
+    @Query('cols', new ParseIntPipe({ optional: true })) cols?: number,
+    @Query('rows', new ParseIntPipe({ optional: true })) rows?: number,
+  ) {
+    return this.appService.getComposeLogs(name, cols, rows);
+  }
+
+  @Get('/container/:id/logs')
+  getContainerLogs(@Param('id') id: string) {
+    return this.appService.getContainerLogs(id);
   }
 }

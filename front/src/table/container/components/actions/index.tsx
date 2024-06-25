@@ -24,6 +24,7 @@ import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
 import { Compose, DockerPs } from "~types/ps";
+import { Link } from "@tanstack/react-router";
 
 import { Row, Table } from "@tanstack/react-table";
 import PlayStop from "./play-stop";
@@ -59,23 +60,32 @@ export function Actions({ row, table }: { row: Row<any>; table: Table<any> }) {
             <HiDotsVertical />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem className="gap-2">
-            <IoEye size="1.2rem" />
-            View Details
-          </DropdownMenuItem>
-          <DropdownMenuItem className="gap-2">
-            <MdContentCopy size="1.2rem" />
-            Copy docker run
-          </DropdownMenuItem>
-          <DropdownMenuItem className="gap-2">
-            <IoTerminal size="1.2rem" />
-            Open in terminal
-          </DropdownMenuItem>
-          <DropdownMenuItem className="gap-2">
-            <PiFolderDuotone size="1.2rem" />
-            View files
-          </DropdownMenuItem>
+        <DropdownMenuContent className="dark">
+          <Link
+            to={isCompose ? "/compose/$name" : "/"}
+            params={isCompose ? { name: compose.name } : undefined}
+          >
+            <DropdownMenuItem className="gap-2 cursor-pointer">
+              <IoEye size="1.2rem" />
+              View Details
+            </DropdownMenuItem>
+          </Link>
+          {!isCompose && (
+            <>
+              <DropdownMenuItem className="gap-2">
+                <MdContentCopy size="1.2rem" />
+                Copy docker run
+              </DropdownMenuItem>
+              <DropdownMenuItem className="gap-2">
+                <IoTerminal size="1.2rem" />
+                Open in terminal
+              </DropdownMenuItem>
+              <DropdownMenuItem className="gap-2">
+                <PiFolderDuotone size="1.2rem" />
+                View files
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuItem className="gap-2">
             <FaPause size="1.2rem" />
             Pause

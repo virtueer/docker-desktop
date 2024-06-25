@@ -13,6 +13,8 @@ services:
     image: nginx
     volumes:
       - nginx_volume:/usr/share/nginx/html
+  serv5:
+    image: nginx
 
 volumes:
   nginx_volume:
