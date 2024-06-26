@@ -8,13 +8,17 @@ services:
   serv3:
     image: alpine
     command: tail -f /dev/null
-    scale: 2
+    scale: 5
   serv4:
     image: nginx
     volumes:
       - nginx_volume:/usr/share/nginx/html
   serv5:
     image: nginx
+    scale: 10
+  serv6:
+    image: busybox
+    command: tail -f /dev/null
 
 volumes:
   nginx_volume:

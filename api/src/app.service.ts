@@ -195,7 +195,6 @@ export class AppService {
       return { status: false, error: 'Not found' };
     }
 
-    console.log(cols, rows);
     const terminal = pty.spawn('docker', ['compose', 'logs', '-t'], {
       name: 'logs',
       cwd: composes.data[0].Labels['com.docker.compose.project.working_dir'],
@@ -206,8 +205,14 @@ export class AppService {
     console.log('Command ->', 'docker compose logs');
     const data = await new Promise((resolve) => {
       let total = '';
-      terminal.onExit(() => resolve(total));
-      terminal.onData((data) => (total += data));
+      let timeout = undefined;
+      // terminal.onExit(() => resolve(total));
+
+      terminal.onData((data) => {
+        clearTimeout(timeout);
+        total += data;
+        timeout = setTimeout(() => resolve(total), 100);
+      });
     });
 
     return {
