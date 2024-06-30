@@ -1,7 +1,26 @@
 import { OnApplicationBootstrap } from '@nestjs/common';
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { exec } from 'child_process';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+
+function parseByLines(data: string) {
+  const datas = [];
+  const lines = data.trim().split(/\r?\n/);
+
+  for (const line of lines) {
+    const string = line.trim();
+
+    if (!string) continue;
+    datas.push(string);
+  }
+  return datas;
+}
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -30,6 +49,20 @@ export class EventsGateway implements OnApplicationBootstrap {
             console.log('ERROR JSON -->', line, '<--');
           }
         }
+      }
+    });
+  }
+
+  @SubscribeMessage('logs')
+  handleEvent(@MessageBody() id: string, @ConnectedSocket() socket: Socket) {
+    const command = `docker logs ${id} -f`;
+    const child = exec(command);
+
+    child.stdout.on('data', (data) => {
+      const lines = parseByLines(data);
+
+      for (const line of lines) {
+        socket.emit('logs', { id, data: line });
       }
     });
   }

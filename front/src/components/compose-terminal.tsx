@@ -1,7 +1,7 @@
 import { useGetComposeLogs } from "@/api/get-compose-logs";
 import { Terminal as XTerm } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
-import "./compose-terminal.css";
+import "./terminal-scroll.css";
 import { useEffect, useMemo, useRef } from "react";
 
 export default function ComposeTerminal({ name }: { name: string }) {

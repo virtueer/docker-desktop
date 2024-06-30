@@ -97,12 +97,13 @@ export const columns: ColumnDef<TData>[] = [
       return <SortableHeader name="Name" column={column} />;
     },
     cell({ row }) {
-      const name =
-        (row.original as Compose).name || (row.original as DockerPs).Names;
+      const compose = row.original as Compose;
+      const dockerPs = row.original as DockerPs;
 
-      const isCompose = !!(row.original as Compose).name;
+      const name = compose?.name || dockerPs.Names;
+      const isCompose = !!compose.name;
 
-      let containerIconColor = getContainerColor(row.original as DockerPs);
+      let containerIconColor = getContainerColor(dockerPs);
 
       let composeIconColor = "";
       const status = getStatus(row.original);
@@ -115,9 +116,7 @@ export const columns: ColumnDef<TData>[] = [
           composeIconColor = PAUSED_COLOR;
           break;
 
-        case !!(row.original as Compose).containers?.find(
-          (x) => x.State !== "running"
-        ):
+        case !!compose.containers?.find((x) => x.State !== "running"):
           composeIconColor = PAUSED_COLOR;
           break;
 
@@ -127,33 +126,38 @@ export const columns: ColumnDef<TData>[] = [
       }
 
       return (
-        <div className="flex items-center gap-3">
-          <div style={{ paddingLeft: `${row.depth}rem` }}>
-            {isCompose && <ImStack size="1.5rem" color={composeIconColor} />}
-            {!isCompose && (
-              <GoContainer size="1.5rem" color={containerIconColor} />
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="underline underline-offset-4">{name}</span>
-            {(row.original as DockerPs).ID && (
-              <span
-                className="flex gap-1 items-center text-white text-xs w-fit"
-                onClick={() =>
-                  navigator.clipboard.writeText((row.original as DockerPs).ID)
-                }
-              >
-                {(row.original as DockerPs).ID.slice(0, 12)}
-                <Button
-                  variant="ghost"
-                  className="p-0 hover:bg-transparent focus:text-red-200 h-fit"
+        <Link
+          to={isCompose ? "/compose/$name" : "/containers/$id"}
+          params={isCompose ? { name: compose.name } : { id: dockerPs.ID }}
+        >
+          <div className="flex items-center gap-3">
+            <div style={{ paddingLeft: `${row.depth}rem` }}>
+              {isCompose && <ImStack size="1.5rem" color={composeIconColor} />}
+              {!isCompose && (
+                <GoContainer size="1.5rem" color={containerIconColor} />
+              )}
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="underline underline-offset-4">{name}</span>
+              {(row.original as DockerPs).ID && (
+                <span
+                  className="flex gap-1 items-center text-white text-xs w-fit"
+                  onClick={() =>
+                    navigator.clipboard.writeText((row.original as DockerPs).ID)
+                  }
                 >
-                  <MdContentCopy />
-                </Button>
-              </span>
-            )}
+                  {(row.original as DockerPs).ID.slice(0, 12)}
+                  <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent focus:text-red-200 h-fit"
+                  >
+                    <MdContentCopy />
+                  </Button>
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        </Link>
       );
     },
     meta: {
