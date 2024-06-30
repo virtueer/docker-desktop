@@ -3,28 +3,31 @@ import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { useEffect, useMemo, useRef } from "react";
 
-export default function LogsTerminal({ id }: { id: string }) {
+export default function ExecTerminal({ id }: { id: string }) {
   const xterm_container = useRef(null);
   const term = useMemo(() => new Terminal(), []);
 
   useEffect(() => {
     if (xterm_container.current) {
       InitializeXterm();
+
+      term.onData((data) => {
+        socket.emit("input", data);
+      });
     }
   }, [xterm_container]);
 
   useEffect(() => {
-    function onLogs({ id: containerId, data }: { id: string; data: string }) {
+    function onExec({ id: containerId, data }: { id: string; data: string }) {
       if (id === containerId) {
-        term.writeln(data);
+        term.write(data);
       }
     }
 
-    socket.on("logs", onLogs);
-    socket.emit("logs", id);
+    socket.on("exec", onExec);
 
     return () => {
-      socket.off("logs", onLogs);
+      socket.off("exec", onExec);
     };
   }, []);
 
@@ -34,6 +37,7 @@ export default function LogsTerminal({ id }: { id: string }) {
     term.loadAddon(fitAddon);
     term.open(xterm_container.current!);
     fitAddon.fit();
+    socket.emit("exec", { id, cols: term.cols, rows: term.rows });
   }
 
   return <div id="xterm-container" ref={xterm_container} className="h-full" />;

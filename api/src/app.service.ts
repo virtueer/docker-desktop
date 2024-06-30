@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as pty from 'node-pty';
+import { parse } from 'stat-json';
 import {
   DockerPs,
   GetDockerAllPsResponse,
@@ -196,14 +197,17 @@ export class AppService {
       return { status: false, error: 'Not found' };
     }
 
+    const cwd =
+      composes.data[0].Labels['com.docker.compose.project.working_dir'];
+
     const terminal = pty.spawn('docker', ['compose', 'logs', '-t'], {
       name: 'logs',
-      cwd: composes.data[0].Labels['com.docker.compose.project.working_dir'],
+      cwd,
       cols,
       rows,
     });
 
-    console.log('Command ->', 'docker compose logs');
+    console.log('Command ->', `docker compose logs ${cwd}`);
     const data = await new Promise((resolve) => {
       let total = '';
       let timeout = undefined;
@@ -234,6 +238,21 @@ export class AppService {
     return {
       status: true,
       data: JSON.parse(stdout.trim()) as Inspect[],
+    };
+  }
+
+  async getFiles(id: string, path = '/') {
+    const command = `docker exec ${id} sh -c "ls -a ${path} | xargs stat"`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr, '---');
+      return { status: false, error: stderr };
+    }
+
+    return {
+      status: true,
+      data: parse(stdout),
     };
   }
 }

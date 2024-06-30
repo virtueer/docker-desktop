@@ -94,4 +94,9 @@ export class AppController {
   inspectContainer(@Param('id') id: string) {
     return this.appService.inspectContainer(id);
   }
+
+  @Get('/container/:id/files')
+  getFiles(@Param('id') id: string) {
+    return this.appService.getFiles(id);
+  }
 }

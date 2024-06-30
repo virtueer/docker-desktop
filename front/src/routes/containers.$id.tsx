@@ -66,7 +66,7 @@ function Page() {
           Files
         </TabsTrigger>
       </TabsList>
-      <div className="border h-[calc(100vh-80px)] overflow-auto">
+      <div className="border h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] overflow-y-auto scrollbar">
         <Outlet key={tab} />
       </div>
     </Tabs>

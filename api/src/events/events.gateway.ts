@@ -1,3 +1,5 @@
+import * as pty from 'node-pty';
+import { ExecParams } from '~types/exec';
 import { OnApplicationBootstrap } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -54,7 +56,7 @@ export class EventsGateway implements OnApplicationBootstrap {
   }
 
   @SubscribeMessage('logs')
-  handleEvent(@MessageBody() id: string, @ConnectedSocket() socket: Socket) {
+  handleLogs(@MessageBody() id: string, @ConnectedSocket() socket: Socket) {
     const command = `docker logs ${id} -f`;
     const child = exec(command);
 
@@ -65,5 +67,25 @@ export class EventsGateway implements OnApplicationBootstrap {
         socket.emit('logs', { id, data: line });
       }
     });
+  }
+
+  @SubscribeMessage('exec')
+  async handleExec(
+    @MessageBody() { id, cols, rows }: ExecParams,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const terminal = pty.spawn('docker', ['exec', '-it', id, '/bin/sh'], {
+      name: id,
+      cols,
+      rows,
+    });
+
+    console.log('Command ->', `docker exec -it ${id} /bin/sh`);
+
+    terminal.onData((data) => {
+      socket.emit('exec', { id, data });
+    });
+
+    socket.on('input', (data) => terminal.write(data));
   }
 }
