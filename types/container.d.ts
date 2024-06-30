@@ -1,10 +1,10 @@
 import { FailResponse, StatusResponse } from "./base";
 
-export type GetContanerLogsResponse =
-  | GetContanerLogsResponseSuccess
+export type GetContainerLogsResponse =
+  | GetContainerLogsResponseSuccess
   | FailResponse;
 
-export interface GetContanerLogsResponseSuccess extends StatusResponse {
+export interface GetContainerLogsResponseSuccess extends StatusResponse {
   status: true;
   data: string;
 }

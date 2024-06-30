@@ -1,8 +1,15 @@
+import { cn } from "@/lib/utils";
 import "./infinite-loading.css";
 
-export default function InfiniteLoading({ width }: { width: string }) {
+export default function InfiniteLoading({
+  width,
+  className,
+}: {
+  width: string;
+  className?: string;
+}) {
   return (
-    <div className="loader" style={{ width }}>
+    <div className={cn("loader mx-auto", className)} style={{ width }}>
       <div className="loaderBar"></div>
     </div>
   );

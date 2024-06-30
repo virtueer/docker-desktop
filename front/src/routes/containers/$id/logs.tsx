@@ -10,10 +10,8 @@ function Page() {
   const id = useParams({ from: Route.id, select: (x) => x.id });
 
   return (
-    <TabsContent value="logs" className="">
-      <div className="border border-red-500 h-[calc(100vh-80px)]">
-        <LogsTerminal id={id} />
-      </div>
+    <TabsContent value="logs" className="h-full">
+      <LogsTerminal id={id} />
     </TabsContent>
   );
 }

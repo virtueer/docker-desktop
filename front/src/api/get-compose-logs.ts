@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import { GetContanerLogsResponse } from "~types/container";
+import { GetContainerLogsResponse } from "~types/container";
 import { api } from "../axios";
 
 async function getComposeLogs(name: string, cols: number, rows: number) {
-  const response = await api.get<GetContanerLogsResponse>(
+  const response = await api.get<GetContainerLogsResponse>(
     `/compose/${name}/logs?cols=${cols}&rows=${rows}`
   );
   return response.data;

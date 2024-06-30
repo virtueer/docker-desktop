@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { StatusResponse } from "~types/ps";
+import { StatusResponse } from "~types/base";
 import { api } from "../axios";
 
 export async function deleteContainer(id: string) {

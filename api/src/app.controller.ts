@@ -89,4 +89,9 @@ export class AppController {
   getContainerLogs(@Param('id') id: string) {
     return this.appService.getContainerLogs(id);
   }
+
+  @Get('/container/:id/inspect')
+  inspectContainer(@Param('id') id: string) {
+    return this.appService.inspectContainer(id);
+  }
 }

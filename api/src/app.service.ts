@@ -5,6 +5,7 @@ import {
   GetDockerAllPsResponse,
   GetDockerPsResponse,
 } from '~types/ps';
+import { Inspect } from '~types/inspect';
 import { exec } from './common/cp';
 import { parseLabels, text2json } from './common/parse';
 
@@ -218,6 +219,21 @@ export class AppService {
     return {
       status: true,
       data,
+    };
+  }
+
+  async inspectContainer(id: string) {
+    const command = `docker inspect ${id}`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr) {
+      console.log('stderr', stderr, '---');
+      return { status: false, error: stderr };
+    }
+
+    return {
+      status: true,
+      data: JSON.parse(stdout.trim()) as Inspect[],
     };
   }
 }

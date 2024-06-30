@@ -1,4 +1,4 @@
-import { FailResponse } from "./ps";
+import { FailResponse, StatusResponse } from "./base";
 
 export type GetImagesResponse = GetImagesResponseSuccess | FailResponse;
 export type GetImageResponse = GetImageResponseSuccess | FailResponse;
