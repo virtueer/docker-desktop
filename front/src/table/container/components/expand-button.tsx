@@ -2,11 +2,15 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 
-export function ExpandButton({ row }: { row: Row<any> }) {
-  const expandable = row.getCanExpand();
-
-  if (expandable) {
-    const expanded = row.getIsExpanded();
+export function ExpandButton({
+  row,
+  expandable,
+}: {
+  row: Row<any>;
+  expandable?: boolean;
+}) {
+  if (row.getCanExpand() || expandable) {
+    const isExpanded = row?.getIsExpanded();
 
     return (
       <Button
@@ -15,8 +19,8 @@ export function ExpandButton({ row }: { row: Row<any> }) {
         onClick={row.getToggleExpandedHandler()}
         style={{ cursor: "pointer", textAlign: "center" }}
       >
-        {expanded && <ChevronDownIcon />}
-        {!expanded && <ChevronRightIcon />}
+        {isExpanded && <ChevronDownIcon />}
+        {!isExpanded && <ChevronRightIcon />}
       </Button>
     );
   }

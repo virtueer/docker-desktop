@@ -32,7 +32,7 @@ export const columns: ColumnDef<TData>[] = [
         />
       );
     },
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       return (
         <Checkbox
           checked={

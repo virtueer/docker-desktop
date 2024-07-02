@@ -96,7 +96,7 @@ export class AppController {
   }
 
   @Get('/container/:id/files')
-  getFiles(@Param('id') id: string) {
-    return this.appService.getFiles(id);
+  getFiles(@Param('id') id: string, @Query('path') path: string) {
+    return this.appService.getFiles(id, path);
   }
 }

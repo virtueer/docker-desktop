@@ -1,4 +1,4 @@
-import { FailResponse } from "./ps";
+import { FailResponse } from "./base";
 
 export type GetVolumesResponse = GetVolumesResponseSuccess | FailResponse;
 

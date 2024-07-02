@@ -7,8 +7,10 @@ import {
   GetDockerPsResponse,
 } from '~types/ps';
 import { Inspect } from '~types/inspect';
+import { File } from '~types/file';
 import { exec } from './common/cp';
 import { parseLabels, text2json } from './common/parse';
+import * as path from 'node:path';
 
 @Injectable()
 export class AppService {
@@ -241,18 +243,25 @@ export class AppService {
     };
   }
 
-  async getFiles(id: string, path = '/') {
-    const command = `docker exec ${id} sh -c "ls -a ${path} | xargs stat"`;
+  async getFiles(id: string, dest = '/') {
+    const dest_path = path.posix.normalize(dest + '/');
+    const command = `docker exec ${id} sh -c "ls -a ${dest_path} | xargs -I {} stat ${dest_path}{} || true"`;
     const { stderr, stdout } = await exec(command);
 
-    if (stderr) {
+    if (stderr && !stdout) {
       console.log('stderr', stderr, '---');
       return { status: false, error: stderr };
     }
 
     return {
       status: true,
-      data: parse(stdout),
+      data: parse(stdout, dest_path)
+        .filter((x) => !['..', '.'].includes(x.name))
+        .map((x) => ({
+          ...x,
+          path: path.posix.resolve(dest_path, x.name),
+          dir: path.posix.resolve(dest_path),
+        })) as File[],
     };
   }
 }

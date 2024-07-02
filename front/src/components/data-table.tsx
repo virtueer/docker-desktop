@@ -88,6 +88,7 @@ function CustomTableHead({ header }: { header: Header<any, unknown> }) {
 
   return (
     <TableHead
+      colSpan={header.colSpan}
       className={cn("text-nowrap", meta?.headerClass)}
       style={{ ...meta?.headerStyle }}
     >
