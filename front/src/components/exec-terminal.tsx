@@ -1,4 +1,4 @@
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { useEffect, useMemo, useRef } from "react";
@@ -12,7 +12,7 @@ export default function ExecTerminal({ id }: { id: string }) {
       InitializeXterm();
 
       term.onData((data) => {
-        socket.emit("input", data);
+        // socket.emit("input", data);
       });
     }
   }, [xterm_container]);
@@ -24,11 +24,11 @@ export default function ExecTerminal({ id }: { id: string }) {
       }
     }
 
-    socket.on("exec", onExec);
+    // socket.on("exec", onExec);
 
-    return () => {
-      socket.off("exec", onExec);
-    };
+    // return () => {
+    //   socket.off("exec", onExec);
+    // };
   }, []);
 
   async function InitializeXterm() {
@@ -37,7 +37,7 @@ export default function ExecTerminal({ id }: { id: string }) {
     term.loadAddon(fitAddon);
     term.open(xterm_container.current!);
     fitAddon.fit();
-    socket.emit("exec", { id, cols: term.cols, rows: term.rows });
+    // socket.emit("exec", { id, cols: term.cols, rows: term.rows });
   }
 
   return <div id="xterm-container" ref={xterm_container} className="h-full" />;

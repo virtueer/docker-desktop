@@ -1,4 +1,4 @@
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 import { createFileRoute } from "@tanstack/react-router";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
@@ -23,11 +23,11 @@ function Page() {
       term.writeln(data);
     }
 
-    socket.on("events", onEvents);
+    // socket.on("events", onEvents);
 
-    return () => {
-      socket.off("events", onEvents);
-    };
+    // return () => {
+    //   socket.off("events", onEvents);
+    // };
   }, []);
 
   async function InitializeXterm() {

@@ -1,4 +1,4 @@
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import { useEffect, useMemo, useRef } from "react";
@@ -20,12 +20,12 @@ export default function LogsTerminal({ id }: { id: string }) {
       }
     }
 
-    socket.on("logs", onLogs);
-    socket.emit("logs", id);
+    // socket.on("logs", onLogs);
+    // socket.emit("logs", id);
 
-    return () => {
-      socket.off("logs", onLogs);
-    };
+    // return () => {
+    //   socket.off("logs", onLogs);
+    // };
   }, []);
 
   async function InitializeXterm() {

@@ -1,5 +1,5 @@
 import { getDockerPsWrapper } from "@/api/get-docker-ps";
-import { socket } from "@/socket";
+// import { socket } from "@/socket";
 import { deleteContainerById } from "@/util";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -46,11 +46,11 @@ export default function PsWatcher() {
       }
     }
 
-    socket.on("events", onEvents);
+    // socket.on("events", onEvents);
 
-    return () => {
-      socket.off("events", onEvents);
-    };
+    // return () => {
+    //   socket.off("events", onEvents);
+    // };
   }, []);
 
   return <></>;

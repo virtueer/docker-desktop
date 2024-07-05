@@ -1,0 +1,7 @@
+export enum EMIT_EVENTS {
+  CONTAINERS_UPDATED = 'CONTAINERS_UPDATED',
+}
+
+export enum SOCKET_EVENTS {
+  CONTAINERS_UPDATED = 'containers',
+}

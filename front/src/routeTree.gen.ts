@@ -13,10 +13,12 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as WatchIndexImport } from './routes/watch/index'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
+import { Route as StateIndexImport } from './routes/state/index'
 import { Route as PsIndexImport } from './routes/ps/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
 import { Route as ContainersIdImport } from './routes/containers.$id'
 import { Route as ComposeNameImport } from './routes/compose/$name'
+import { Route as V2ContainerIndexImport } from './routes/v2/container/index'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
 import { Route as ContainersIdLogsImport } from './routes/containers/$id/logs'
 import { Route as ContainersIdInspectImport } from './routes/containers/$id/inspect'
@@ -32,6 +34,11 @@ const WatchIndexRoute = WatchIndexImport.update({
 
 const VolumesIndexRoute = VolumesIndexImport.update({
   path: '/volumes/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StateIndexRoute = StateIndexImport.update({
+  path: '/state/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -52,6 +59,11 @@ const ContainersIdRoute = ContainersIdImport.update({
 
 const ComposeNameRoute = ComposeNameImport.update({
   path: '/compose/$name',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const V2ContainerIndexRoute = V2ContainerIndexImport.update({
+  path: '/v2/container/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -112,6 +124,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/state/': {
+      id: '/state/'
+      path: '/state'
+      fullPath: '/state'
+      preLoaderRoute: typeof StateIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/volumes/': {
       id: '/volumes/'
       path: '/volumes'
@@ -161,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImagesIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/v2/container/': {
+      id: '/v2/container/'
+      path: '/v2/container'
+      fullPath: '/v2/container'
+      preLoaderRoute: typeof V2ContainerIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -176,9 +202,11 @@ export const routeTree = rootRoute.addChildren({
   }),
   ImagesIndexRoute,
   PsIndexRoute,
+  StateIndexRoute,
   VolumesIndexRoute,
   WatchIndexRoute,
   ImagesIdIndexRoute,
+  V2ContainerIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -187,15 +215,16 @@ export const routeTree = rootRoute.addChildren({
 {
   "routes": {
     "__root__": {
-      "filePath": "__root.tsx",
       "children": [
         "/compose/$name",
         "/containers/$id",
         "/images/",
         "/ps/",
+        "/state/",
         "/volumes/",
         "/watch/",
-        "/images/$id/"
+        "/images/$id/",
+        "/v2/container/"
       ]
     },
     "/compose/$name": {
@@ -215,6 +244,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/ps/": {
       "filePath": "ps/index.tsx"
+    },
+    "/state/": {
+      "filePath": "state/index.tsx"
     },
     "/volumes/": {
       "filePath": "volumes/index.tsx"
@@ -240,6 +272,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/images/$id/": {
       "filePath": "images/$id/index.tsx"
+    },
+    "/v2/container/": {
+      "filePath": "v2/container/index.tsx"
     }
   }
 }

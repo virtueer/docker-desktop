@@ -9,7 +9,7 @@ export default function InfiniteLoading({
   className?: string;
 }) {
   return (
-    <div className={cn("loader mx-auto", className)} style={{ width }}>
+    <div className={cn("loader", className)} style={{ width }}>
       <div className="loaderBar"></div>
     </div>
   );

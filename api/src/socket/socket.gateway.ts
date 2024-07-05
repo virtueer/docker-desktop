@@ -1,15 +1,21 @@
-import * as pty from 'node-pty';
-import { ExecParams } from '~types/exec';
-import { OnApplicationBootstrap } from '@nestjs/common';
+import { forwardRef, Inject } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { exec } from 'child_process';
+import * as pty from 'node-pty';
 import { Server, Socket } from 'socket.io';
+import { groupContainers } from 'src/common/group-containers';
+import { StateService } from 'src/state/state.service';
+import { ExecParams } from '~types/exec';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EMIT_EVENTS, SOCKET_EVENTS } from 'src/common/emit-events';
 
 function parseByLines(data: string) {
   const datas = [];
@@ -27,33 +33,45 @@ function parseByLines(data: string) {
 @WebSocketGateway({
   cors: { origin: '*' },
 })
-export class EventsGateway implements OnApplicationBootstrap {
+export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @Inject(EventEmitter2)
+  private readonly emitter: EventEmitter2;
+
+  @Inject(forwardRef(() => StateService))
+  private readonly stateService: StateService;
+
   @WebSocketServer()
   server: Server;
 
-  onApplicationBootstrap() {
-    const command = 'docker events --format json';
-    const child = exec(command);
+  async handleConnection(socket: Socket) {
+    const groupped = groupContainers([
+      ...this.stateService.containers.values(),
+    ]);
 
-    child.stdout.on('data', (data) => {
-      const lines = data.trim().split(/\r?\n/);
+    socket.emit('containers', groupped);
 
-      for (const line of lines) {
-        const string = line.trim();
+    const handler = () => {
+      console.log(
+        'handled',
+        this.server.sockets.sockets.size,
+        this.emitter.listenerCount(EMIT_EVENTS.CONTAINERS_UPDATED),
+      );
 
-        if (!string) continue;
+      const groupped = groupContainers([
+        ...this.stateService.containers.values(),
+      ]);
 
-        for (const [, socket] of this.server.sockets.sockets) {
-          try {
-            socket.emit('events', JSON.parse(string));
-          } catch (error) {
-            console.log(error);
-            console.log('ERROR JSON -->', line, '<--');
-          }
-        }
-      }
+      socket.emit(SOCKET_EVENTS.CONTAINERS_UPDATED, groupped);
+    };
+
+    socket.on('disconnect', () => {
+      this.emitter.off(EMIT_EVENTS.CONTAINERS_UPDATED, handler);
     });
+
+    this.emitter.on(EMIT_EVENTS.CONTAINERS_UPDATED, handler);
   }
+
+  async handleDisconnect() {}
 
   @SubscribeMessage('logs')
   handleLogs(@MessageBody() id: string, @ConnectedSocket() socket: Socket) {
