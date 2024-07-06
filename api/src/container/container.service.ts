@@ -27,9 +27,10 @@ export class ContainerService implements OnModuleInit {
 
   inspects = new Map<string, any>();
   statsStreams = new Map<string, IncomingMessage>();
-  logsStreams = new Map<string, IncomingMessage>();
+  logsStreams = new Map<string, PassThrough>();
 
   logs = new Map<string, string[]>();
+  composeLogs = new Map<string, string[]>();
   stats = new Map<string, Dockerode.ContainerStats[]>();
 
   async initialize() {
@@ -38,7 +39,7 @@ export class ContainerService implements OnModuleInit {
 
     this.emitter.on(EMIT_EVENTS.CONTAINERS_UPDATED, () => {
       clearTimeout(timeout);
-      timeout = timeout = setTimeout(() => this.updateContainers(), timeout_ms);
+      timeout = setTimeout(() => this.updateContainers(), timeout_ms);
     });
   }
 
@@ -60,7 +61,7 @@ export class ContainerService implements OnModuleInit {
     const instance = docker.getContainer(container.Id);
     this.updateInspect(instance);
     this.watchStats(instance, container.State !== 'running');
-    this.watchLogs(instance);
+    this.watchLogs(instance, container);
   }
 
   async updateInspect(container: Dockerode.Container) {
@@ -95,11 +96,16 @@ export class ContainerService implements OnModuleInit {
     });
   }
 
-  async watchLogs(container: Dockerode.Container) {
-    const oldStream = this.logsStreams.get(container.id);
+  async watchLogs(
+    instance: Dockerode.Container,
+    container: Dockerode.ContainerInfo,
+  ) {
+    const compose = container.Labels['com.docker.compose.project'];
+
+    const oldStream = this.logsStreams.get(container.Id);
     if (oldStream) return;
 
-    const options: Parameters<typeof container.logs>[0] = {
+    const options: Parameters<typeof instance.logs>[0] = {
       details: false,
       follow: true,
       timestamps: true,
@@ -107,27 +113,47 @@ export class ContainerService implements OnModuleInit {
       stderr: false,
     };
 
-    const stream = (await container.logs(options)) as IncomingMessage;
-    this.statsStreams.set(container.id, stream);
-    this.logs.set(container.id, []);
+    const stream = (await instance.logs(options)) as IncomingMessage;
+    this.statsStreams.set(instance.id, stream);
+    this.logs.set(instance.id, []);
+    if (compose) {
+      this.composeLogs.set(compose, []);
+    }
 
-    const logStream = new PassThrough();
-    logStream.on('data', (chunk: Buffer) => {
-      const logs = this.logs.get(container.id);
-
-      // last 100_000 lines
+    function cacheLog(logs: string[], log: string) {
       if (logs.length === 100_000) {
         logs.shift();
       }
 
-      logs.push(chunk.toString());
+      logs.push(log);
+    }
+
+    const logStream = new PassThrough();
+    logStream.on('data', (chunk: Buffer) => {
+      const log = chunk.toString();
+      const logs = this.logs.get(instance.id);
+      cacheLog(logs, log);
+
+      this.emitter.emit(EMIT_EVENTS.CONTAINER_LOGS, { container, log });
+
+      if (compose) {
+        const logs = this.composeLogs.get(compose);
+        cacheLog(logs, log);
+
+        this.emitter.emit(EMIT_EVENTS.COMPOSE_LOGS, {
+          compose,
+          container,
+          log,
+        });
+      }
     });
 
-    container.modem.demuxStream(stream, logStream, logStream);
+    this.logsStreams.set(container.Id, logStream);
+
+    instance.modem.demuxStream(stream, logStream, logStream);
   }
 
   async onEvent(event: Events) {
-    console.log('CONTAINER ON EVENT', event);
     await new Promise((r) => setTimeout(r, 1000));
     this.updateContainers({ id: [event.id] });
   }

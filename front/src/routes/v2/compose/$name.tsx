@@ -2,6 +2,7 @@ import { useStore } from "@/store";
 import { createFileRoute } from "@tanstack/react-router";
 import { Compose } from "~types/v2/container/list";
 import Container from "./_container";
+import ComposeLogsTerminal from "./_terminal";
 
 export const Route = createFileRoute("/v2/compose/$name")({
   component: Page,
@@ -24,8 +25,7 @@ function Page() {
         ))}
       </div>
       <div className="w-full border">
-        terminalle
-        {/* <ComposeTerminal name={name} /> */}
+        <ComposeLogsTerminal name={name} />
       </div>
     </div>
   );
