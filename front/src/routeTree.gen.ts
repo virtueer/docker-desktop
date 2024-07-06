@@ -20,6 +20,7 @@ import { Route as ContainersIdImport } from './routes/containers.$id'
 import { Route as ComposeNameImport } from './routes/compose/$name'
 import { Route as V2ContainerIndexImport } from './routes/v2/container/index'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
+import { Route as V2ComposeNameImport } from './routes/v2/compose/$name'
 import { Route as ContainersIdLogsImport } from './routes/containers/$id/logs'
 import { Route as ContainersIdInspectImport } from './routes/containers/$id/inspect'
 import { Route as ContainersIdFilesImport } from './routes/containers/$id/files'
@@ -69,6 +70,11 @@ const V2ContainerIndexRoute = V2ContainerIndexImport.update({
 
 const ImagesIdIndexRoute = ImagesIdIndexImport.update({
   path: '/images/$id/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const V2ComposeNameRoute = V2ComposeNameImport.update({
+  path: '/v2/compose/$name',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -173,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContainersIdLogsImport
       parentRoute: typeof ContainersIdImport
     }
+    '/v2/compose/$name': {
+      id: '/v2/compose/$name'
+      path: '/v2/compose/$name'
+      fullPath: '/v2/compose/$name'
+      preLoaderRoute: typeof V2ComposeNameImport
+      parentRoute: typeof rootRoute
+    }
     '/images/$id/': {
       id: '/images/$id/'
       path: '/images/$id'
@@ -205,6 +218,7 @@ export const routeTree = rootRoute.addChildren({
   StateIndexRoute,
   VolumesIndexRoute,
   WatchIndexRoute,
+  V2ComposeNameRoute,
   ImagesIdIndexRoute,
   V2ContainerIndexRoute,
 })
@@ -223,6 +237,7 @@ export const routeTree = rootRoute.addChildren({
         "/state/",
         "/volumes/",
         "/watch/",
+        "/v2/compose/$name",
         "/images/$id/",
         "/v2/container/"
       ]
@@ -269,6 +284,9 @@ export const routeTree = rootRoute.addChildren({
     "/containers/$id/logs": {
       "filePath": "containers/$id/logs.tsx",
       "parent": "/containers/$id"
+    },
+    "/v2/compose/$name": {
+      "filePath": "v2/compose/$name.tsx"
     },
     "/images/$id/": {
       "filePath": "images/$id/index.tsx"
