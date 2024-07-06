@@ -1,4 +1,5 @@
 import { forwardRef, Inject } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   ConnectedSocket,
   MessageBody,
@@ -11,11 +12,9 @@ import {
 import { exec } from 'child_process';
 import * as pty from 'node-pty';
 import { Server, Socket } from 'socket.io';
-import { groupContainers } from 'src/common/group-containers';
+import { EMIT_EVENTS, SOCKET_EVENTS } from 'src/common/emit-events';
 import { StateService } from 'src/state/state.service';
 import { ExecParams } from '~types/exec';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EMIT_EVENTS, SOCKET_EVENTS } from 'src/common/emit-events';
 
 function parseByLines(data: string) {
   const datas = [];
@@ -44,31 +43,20 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   async handleConnection(socket: Socket) {
-    const groupped = groupContainers([
-      ...this.stateService.containers.values(),
-    ]);
-
-    socket.emit('containers', groupped);
-
-    const handler = () => {
-      console.log(
-        'handled',
-        this.server.sockets.sockets.size,
-        this.emitter.listenerCount(EMIT_EVENTS.CONTAINERS_UPDATED),
+    const emitContainers = () => {
+      socket.emit(
+        SOCKET_EVENTS.CONTAINERS_UPDATED,
+        this.stateService.getGroupedContainers(),
       );
-
-      const groupped = groupContainers([
-        ...this.stateService.containers.values(),
-      ]);
-
-      socket.emit(SOCKET_EVENTS.CONTAINERS_UPDATED, groupped);
     };
 
     socket.on('disconnect', () => {
-      this.emitter.off(EMIT_EVENTS.CONTAINERS_UPDATED, handler);
+      this.emitter.off(EMIT_EVENTS.CONTAINERS_UPDATED, emitContainers);
     });
 
-    this.emitter.on(EMIT_EVENTS.CONTAINERS_UPDATED, handler);
+    this.emitter.on(EMIT_EVENTS.CONTAINERS_UPDATED, emitContainers);
+
+    emitContainers();
   }
 
   async handleDisconnect() {}

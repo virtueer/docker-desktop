@@ -1,5 +1,6 @@
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { docker } from 'src/common/docker';
+import { groupContainers } from 'src/common/group-containers';
 import { ContainerService } from 'src/container/container.service';
 import { ContainerInfo } from '~types/v2/container/list';
 import { Events } from '~types/v2/events';
@@ -10,6 +11,7 @@ export class StateService implements OnModuleInit {
   private readonly containerService: ContainerService;
 
   containers = new Map<string, ContainerInfo>();
+  loadings = new Set<string>();
 
   onModuleInit() {
     this.initialize();
@@ -26,5 +28,16 @@ export class StateService implements OnModuleInit {
         this.containerService.onEvent(data);
       }
     });
+  }
+
+  getGroupedContainers() {
+    const containers = [...this.containers.values()].map((x) => ({
+      ...x,
+      loading: this.loadings.has(x.Id),
+    }));
+
+    const groupped = groupContainers(containers);
+
+    return groupped;
   }
 }

@@ -3,7 +3,6 @@ import { ContainerIcon } from "@/components/container/v2/container-icon";
 import { DataTable } from "@/components/data-table";
 import InfiniteLoading from "@/components/infinite-loading";
 import { TableCheckbox } from "@/components/table/checkbox";
-import { Button } from "@/components/ui/button";
 import { ExpandButton } from "@/table/container/components/expand-button";
 import { SortableHeader } from "@/table/container/components/sortable-header";
 import { getComposeStatus } from "@/table/container/helper";
@@ -18,6 +17,7 @@ import {
   ContainerInfo,
   GrouppedContainer,
 } from "~types/v2/container/list";
+import { Actions } from "./actions";
 
 const columns: ColumnDef<GrouppedContainer>[] = [
   {
@@ -138,8 +138,8 @@ const columns: ColumnDef<GrouppedContainer>[] = [
   },
   {
     accessorKey: "Actions",
-    cell({}) {
-      return <Button>asd</Button>;
+    cell({ row }) {
+      return <Actions row={row} />;
     },
     meta: {
       headerClass: "text-white",

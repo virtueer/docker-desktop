@@ -32,7 +32,15 @@ export class ContainerService implements OnModuleInit {
   logs = new Map<string, string[]>();
   stats = new Map<string, Dockerode.ContainerStats[]>();
 
-  async initialize() {}
+  async initialize() {
+    const timeout_ms = 60_000;
+    let timeout = setTimeout(() => this.updateContainers(), timeout_ms);
+
+    this.emitter.on(EMIT_EVENTS.CONTAINERS_UPDATED, () => {
+      clearTimeout(timeout);
+      timeout = timeout = setTimeout(() => this.updateContainers(), timeout_ms);
+    });
+  }
 
   async updateContainers(filters?: { [key: string]: string[] }) {
     const containers = await docker.listContainers({ all: true, filters });
@@ -155,7 +163,7 @@ export class ContainerService implements OnModuleInit {
 
     const instance = docker.getContainer(id);
 
-    container.loading = true;
+    this.stateService.loadings.add(container.Id);
 
     this.emitter.emit(
       EMIT_EVENTS.CONTAINERS_UPDATED,
@@ -164,7 +172,7 @@ export class ContainerService implements OnModuleInit {
 
     await new Promise((r) => setTimeout(r, 5000));
 
-    container.loading = undefined;
+    this.stateService.loadings.delete(container.Id);
 
     this.emitter.emit(
       EMIT_EVENTS.CONTAINERS_UPDATED,

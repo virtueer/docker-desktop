@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContainerTable } from "./_components";
+import { ContainerTable } from "./_table";
 import { useStore } from "@/store";
 
 export const Route = createFileRoute("/v2/container/")({
