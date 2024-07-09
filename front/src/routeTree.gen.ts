@@ -20,6 +20,7 @@ import { Route as ContainersIdImport } from './routes/containers.$id'
 import { Route as ComposeNameImport } from './routes/compose/$name'
 import { Route as V2ContainerIndexImport } from './routes/v2/container/index'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
+import { Route as V2ContainerIdImport } from './routes/v2.container.$id'
 import { Route as V2ComposeNameImport } from './routes/v2/compose/$name'
 import { Route as ContainersIdLogsImport } from './routes/containers/$id/logs'
 import { Route as ContainersIdInspectImport } from './routes/containers/$id/inspect'
@@ -70,6 +71,11 @@ const V2ContainerIndexRoute = V2ContainerIndexImport.update({
 
 const ImagesIdIndexRoute = ImagesIdIndexImport.update({
   path: '/images/$id/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const V2ContainerIdRoute = V2ContainerIdImport.update({
+  path: '/v2/container/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -186,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof V2ComposeNameImport
       parentRoute: typeof rootRoute
     }
+    '/v2/container/$id': {
+      id: '/v2/container/$id'
+      path: '/v2/container/$id'
+      fullPath: '/v2/container/$id'
+      preLoaderRoute: typeof V2ContainerIdImport
+      parentRoute: typeof rootRoute
+    }
     '/images/$id/': {
       id: '/images/$id/'
       path: '/images/$id'
@@ -219,6 +232,7 @@ export const routeTree = rootRoute.addChildren({
   VolumesIndexRoute,
   WatchIndexRoute,
   V2ComposeNameRoute,
+  V2ContainerIdRoute,
   ImagesIdIndexRoute,
   V2ContainerIndexRoute,
 })
@@ -238,6 +252,7 @@ export const routeTree = rootRoute.addChildren({
         "/volumes/",
         "/watch/",
         "/v2/compose/$name",
+        "/v2/container/$id",
         "/images/$id/",
         "/v2/container/"
       ]
@@ -287,6 +302,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/v2/compose/$name": {
       "filePath": "v2/compose/$name.tsx"
+    },
+    "/v2/container/$id": {
+      "filePath": "v2.container.$id.tsx"
     },
     "/images/$id/": {
       "filePath": "images/$id/index.tsx"

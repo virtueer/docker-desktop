@@ -25,7 +25,7 @@ export default function Container({ container }: { container: ContainerInfo }) {
           <span className="capitalize">{container.State}</span>
         </div>
         <ContainerPlayStop container={container} />
-        <ContainerThreeDots />
+        <ContainerThreeDots container={container} />
         <ContainerDeleteDialog container={container} />
       </div>
       <Separator className="my-2 bg-night-300" />

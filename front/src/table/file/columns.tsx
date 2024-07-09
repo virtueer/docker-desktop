@@ -6,8 +6,30 @@ import { LuFileSymlink } from "react-icons/lu";
 import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import bytes from "bytes";
 import { TimeAgo } from "@/components/timeago";
+import { FileTableMetadata } from "./data-table";
+import { FaSpinner } from "react-icons/fa";
 
 type TData = ExtendedFile;
+
+function getIcon(file: ExtendedFile) {
+  let icon;
+
+  switch (file.permission.fileType) {
+    case "Directory":
+      icon = <FaRegFolder />;
+      break;
+
+    case "Symbolic Link":
+      icon = <LuFileSymlink />;
+      break;
+
+    default:
+      icon = <FaRegFile />;
+      break;
+  }
+
+  return icon;
+}
 
 export const columns: ColumnDef<TData>[] = [
   {
@@ -21,14 +43,18 @@ export const columns: ColumnDef<TData>[] = [
         row.original.permission.fileType === "Directory" ? "visible" : "hidden";
 
       const isExpanded = row?.getIsExpanded();
+      const isLoading = row.original.isLoading;
+
+      const { getFiles } = table.options.meta as FileTableMetadata;
 
       function handleExpand() {
-        console.log(table);
         if (!row.original.childs) {
-          (table.options.meta as any)?.getFiles(row.original.path);
+          getFiles(row.original.path);
         }
         row.toggleExpanded();
       }
+
+      const Icon = getIcon(row.original);
 
       return (
         <div
@@ -41,21 +67,12 @@ export const columns: ColumnDef<TData>[] = [
             onClick={handleExpand}
             style={{ cursor: "pointer", textAlign: "center", visibility }}
           >
-            {isExpanded && <ChevronDownIcon />}
-            {!isExpanded && <ChevronRightIcon />}
+            {isLoading && <FaSpinner className="animate-spin" />}
+            {!isLoading && isExpanded && <ChevronDownIcon />}
+            {!isLoading && !isExpanded && <ChevronRightIcon />}
           </Button>
 
-          <>
-            {row.original.permission.fileType === "Directory" && (
-              <FaRegFolder />
-            )}
-            {row.original.permission.fileType === "Regular File" && (
-              <FaRegFile />
-            )}
-            {row.original.permission.fileType === "Symbolic Link" && (
-              <LuFileSymlink />
-            )}
-          </>
+          {Icon}
           <span className="ml-2"> {row.original.name}</span>
         </div>
       );

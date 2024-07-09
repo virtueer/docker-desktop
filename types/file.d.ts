@@ -1,6 +1,9 @@
 import { FailResponse } from "./base";
 
-export type ExtendedFile = File & { childs?: ExtendedFile[] };
+export type ExtendedFile = File & {
+  childs?: ExtendedFile[];
+  isLoading?: boolean;
+};
 
 export type GetFilesResponse = GetFilesResponseSuccess | FailResponse;
 

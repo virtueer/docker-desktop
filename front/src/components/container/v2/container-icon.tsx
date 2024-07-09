@@ -1,22 +1,22 @@
-import { Container } from "~types/v2/container/list";
+import { Button } from "@/components/ui/button";
+import { getColorByState } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
-import { Button } from "@/components/ui/button";
 import { MdContentCopy } from "react-icons/md";
-import { getColorByState } from "@/table/container/helper";
+import { ContainerInfo } from "~types/v2/container/list";
 
 export function ContainerIcon({
   container,
   depth,
 }: {
-  container: Container;
+  container: ContainerInfo;
   depth: number;
 }) {
   const color = getColorByState(container.State);
   const paddingLeft = `${depth}rem`;
 
   return (
-    <Link to={"/containers/$id"} params={{ id: container.Id }}>
+    <Link to={"/v2/container/$id"} params={{ id: container.Id }}>
       <div className="flex items-center gap-3">
         <div style={{ paddingLeft }}>
           {<GoContainer size="1.5rem" color={color} />}

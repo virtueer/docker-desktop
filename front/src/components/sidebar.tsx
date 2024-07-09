@@ -8,7 +8,7 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col p-3 border-r-2 gap-1">
       <Link
-        to="/ps"
+        to="/v2/container"
         className="rounded-lg"
         activeProps={{ className: "!bg-slate-700" }}
       >

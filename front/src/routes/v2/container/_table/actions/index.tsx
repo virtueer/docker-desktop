@@ -18,7 +18,7 @@ export function Actions({ row }: { row: Row<any> }) {
       {isCompose && <ComposeThreeDots compose={compose} />}
       {isCompose && <ComposeDeleteDialog compose={compose} />}
       {!isCompose && <ContainerPlayStop container={container} />}
-      {!isCompose && <ContainerThreeDots />}
+      {!isCompose && <ContainerThreeDots container={container} />}
       {!isCompose && <ContainerDeleteDialog container={container} />}
     </div>
   );

@@ -1,7 +1,10 @@
 import { DataTable, DataTableProps } from "@/components/data-table";
 import { getCoreRowModel, getExpandedRowModel } from "@tanstack/react-table";
 import { ExtendedFile } from "~types/file";
-import { useTableRowsMetadata } from "../container/metadata";
+
+export type FileTableMetadata = {
+  getFiles: (path: string) => void;
+};
 
 export default function FileTable<TValue>({
   columns,
@@ -10,8 +13,6 @@ export default function FileTable<TValue>({
 }: DataTableProps<ExtendedFile, TValue> & {
   getFiles: (path: string) => void;
 }) {
-  const rowsMetadata = useTableRowsMetadata();
-
   return (
     <DataTable
       columns={columns}
@@ -20,7 +21,6 @@ export default function FileTable<TValue>({
       getCoreRowModel={getCoreRowModel()}
       getExpandedRowModel={getExpandedRowModel()}
       meta={{
-        rowsMetadata,
         getFiles,
       }}
     />
