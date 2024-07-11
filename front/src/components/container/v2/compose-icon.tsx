@@ -34,8 +34,12 @@ export function ComposeIcon({
   }
 
   return (
-    <Link to={"/compose/$name"} params={{ name: compose.name }}>
-      <div className="flex items-center gap-3">
+    <Link
+      to={"/compose/$name"}
+      params={{ name: compose.name }}
+      className="text-blue-500"
+    >
+      <div className="flex items-center gap-3 font-bold">
         <div style={{ paddingLeft }}>
           {<ImStack size="1.5rem" color={color} />}
         </div>

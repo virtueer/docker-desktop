@@ -1,8 +1,25 @@
 import { socket } from "@/socket";
+import { useStore } from "@/store";
 import { Terminal } from "@xterm/xterm";
 import { useEffect, useMemo, useRef } from "react";
+import { ContainerInfo } from "~types/v2/container/list";
+import NotRunning from "./_components/not-running";
+import { MdTerminal } from "react-icons/md";
 
 export default function ExecTab({ id }: { id: string }) {
+  const container = useStore().containers.find(
+    (x) => (x as ContainerInfo).Id === id
+  ) as ContainerInfo;
+
+  if (container.State !== "running") {
+    return (
+      <NotRunning
+        Icon={MdTerminal}
+        text="To execute commands, run the container."
+      />
+    );
+  }
+
   const xterm_container = useRef(null);
   const term = useMemo(
     () =>

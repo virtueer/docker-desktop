@@ -9,21 +9,22 @@ export function ExpandButton({
   row: Row<any>;
   expandable?: boolean;
 }) {
-  if (row.getCanExpand() || expandable) {
-    const isExpanded = row?.getIsExpanded();
+  const canExpand = row.getCanExpand() || expandable;
+  const isExpanded = row?.getIsExpanded();
 
-    return (
-      <Button
-        variant="ghost"
-        className="p-1 w-fit h-fit rounded-full hover:bg-slate-300 hover:text-sky-600"
-        onClick={row.getToggleExpandedHandler()}
-        style={{ cursor: "pointer", textAlign: "center" }}
-      >
-        {isExpanded && <ChevronDownIcon />}
-        {!isExpanded && <ChevronRightIcon />}
-      </Button>
-    );
-  }
-
-  return <></>;
+  return (
+    <Button
+      variant="ghost"
+      className="p-1 w-fit h-fit rounded-full hover:bg-slate-300 hover:text-sky-600"
+      onClick={row.getToggleExpandedHandler()}
+      style={{
+        cursor: "pointer",
+        textAlign: "center",
+        visibility: canExpand ? "visible" : "hidden",
+      }}
+    >
+      {isExpanded && <ChevronDownIcon />}
+      {!isExpanded && <ChevronRightIcon />}
+    </Button>
+  );
 }

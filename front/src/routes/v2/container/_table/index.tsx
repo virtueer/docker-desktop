@@ -9,8 +9,12 @@ import { getComposeStatus } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import {
   ColumnDef,
+  ColumnFiltersState,
+  FilterFn,
   getCoreRowModel,
   getExpandedRowModel,
+  getFilteredRowModel,
+  OnChangeFn,
 } from "@tanstack/react-table";
 import {
   Compose,
@@ -19,6 +23,22 @@ import {
 } from "~types/v2/container/list";
 import { Actions } from "./actions";
 
+const multiColumnFilterFn: FilterFn<GrouppedContainer> = (
+  row,
+  _,
+  filterValue
+) => {
+  const container = row.original as ContainerInfo;
+  const searchableRowContent = `${container.Id} ${container.Names} ${container.Image}`;
+
+  return (
+    (row.original as Compose).name
+      ?.toLowerCase()
+      .includes(filterValue.toLowerCase()) ||
+    searchableRowContent.toLowerCase().includes(filterValue.toLowerCase())
+  );
+};
+
 const columns: ColumnDef<GrouppedContainer>[] = [
   {
     id: "select",
@@ -26,6 +46,10 @@ const columns: ColumnDef<GrouppedContainer>[] = [
     cell: ({ row, table }) => (
       <TableCheckbox table={table} position="cell" row={row} />
     ),
+    meta: {
+      cellClass: "p-2 h-[50px] focus-within:bg-red-500",
+    },
+    filterFn: multiColumnFilterFn,
   },
   {
     id: "Expandable",
@@ -35,6 +59,9 @@ const columns: ColumnDef<GrouppedContainer>[] = [
           <ExpandButton row={row} />
         </div>
       );
+    },
+    meta: {
+      cellClass: "p-2",
     },
   },
   {
@@ -60,11 +87,10 @@ const columns: ColumnDef<GrouppedContainer>[] = [
     },
     meta: {
       headerStyle: { width: "30%" },
-      cellClass: "text-blue-500 font-bold cursor-pointer",
     },
   },
   {
-    accessorKey: "Image",
+    id: "Image",
     accessorFn: (row) => (row as ContainerInfo)?.Image,
     header({ column }) {
       return <SortableHeader name="Image" column={column} />;
@@ -77,18 +103,21 @@ const columns: ColumnDef<GrouppedContainer>[] = [
         data.Image;
 
       return (
-        <Link to="/images/$id" params={{ id }}>
+        <Link
+          to="/images/$id"
+          params={{ id }}
+          className="h-[50px] text-blue-500 underline underline-offset-4 font-bold flex items-center drag-none"
+        >
           {getValue() as string}
         </Link>
       );
     },
     meta: {
       headerStyle: { width: "20%" },
-      cellClass:
-        "text-blue-500 underline underline-offset-4 font-bold cursor-pointer",
     },
   },
   {
+    id: "Status",
     accessorKey: "Status",
     header({ column }) {
       return <SortableHeader name="Status" column={column} />;
@@ -136,6 +165,7 @@ const columns: ColumnDef<GrouppedContainer>[] = [
       headerStyle: { width: "25%" },
     },
   },
+  { id: "State", accessorKey: "State" },
   {
     accessorKey: "Actions",
     cell({ row }) {
@@ -150,9 +180,15 @@ const columns: ColumnDef<GrouppedContainer>[] = [
 
 type Props = {
   data: GrouppedContainer[];
+  columnFilters: ColumnFiltersState;
+  setColumnFilters: OnChangeFn<ColumnFiltersState>;
 };
 
-export function ContainerTable({ data }: Props) {
+export function ContainerTable({
+  data,
+  columnFilters,
+  setColumnFilters,
+}: Props) {
   return (
     <DataTable
       columns={columns}
@@ -160,6 +196,12 @@ export function ContainerTable({ data }: Props) {
       getSubRows={(data) => (data as Compose)?.containers}
       getCoreRowModel={getCoreRowModel()}
       getExpandedRowModel={getExpandedRowModel()}
+      getFilteredRowModel={getFilteredRowModel()}
+      onColumnFiltersChange={setColumnFilters}
+      state={{
+        columnVisibility: { State: false },
+        columnFilters,
+      }}
     />
   );
 }

@@ -17,7 +17,7 @@ export default function FilesTab({ id }: { id: string }) {
 
   if (container.State !== "running") {
     return (
-      <NotRunning Icon={FaFolder} text="To get files, run te container." />
+      <NotRunning Icon={FaFolder} text="To get files, run the container." />
     );
   }
 
