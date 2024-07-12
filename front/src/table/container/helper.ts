@@ -88,3 +88,11 @@ export const getComposeStatus = (compose: Composev2) => {
 
   return `Running (${running}/${compose.containers.length})`;
 };
+
+export const getContainerName = (Names: string[]) => {
+  return Names.map((x) => (x[0] === "/" ? x.slice(1) : x));
+};
+
+export const getImageId = (ImageID: string) => {
+  return ImageID?.replace("sha256:", "");
+};

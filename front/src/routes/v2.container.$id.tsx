@@ -1,11 +1,25 @@
+import RemoveContainerDialog from "@/components/container/v2/remove-container-dialog";
+import { Button } from "@/components/ui/button";
+import ContainerId from "@/components/v2/container/container-id";
 import { TabsEnum } from "@/constants";
 import { cn } from "@/lib/utils";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useStore } from "@/store";
+import {
+  getColorByState,
+  getContainerName,
+  getImageId,
+} from "@/table/container/helper";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useState } from "react";
-import LogsTab from "./v2/container/$id/_logs";
-import InspectTab from "./v2/container/$id/_inspect";
+import { FaPlay, FaStop } from "react-icons/fa";
+import { FaChevronLeft } from "react-icons/fa6";
+import { GoContainer } from "react-icons/go";
+import { MdRestartAlt, MdTerminal } from "react-icons/md";
+import { ContainerInfo } from "~types/v2/container/list";
 import ExecTab from "./v2/container/$id/_exec";
 import FilesTab from "./v2/container/$id/_files";
+import InspectTab from "./v2/container/$id/_inspect";
+import LogsTab from "./v2/container/$id/_logs";
 
 function TabHead({
   text,
@@ -36,42 +50,101 @@ export const Route = createFileRoute("/v2/container/$id")({
 function Page() {
   const id = useParams({ from: Route.id, select: (x) => x.id });
   const [tab, setTab] = useState<string>(TabsEnum.LOGS);
-  const [logsLines, setLogsLines] = useState<string[]>([]);
+
+  const container = useStore().containers.find(
+    (x) => (x as ContainerInfo).Id === id
+  ) as ContainerInfo;
+
+  const color = getColorByState(container.State);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-4 items-center text-sm">
-        <TabHead
-          text={TabsEnum.LOGS}
-          active={tab === TabsEnum.LOGS}
-          onClick={() => setTab(TabsEnum.LOGS)}
-        />
-        <TabHead
-          text={TabsEnum.INSPECT}
-          active={tab === TabsEnum.INSPECT}
-          onClick={() => setTab(TabsEnum.INSPECT)}
-        />
-        {/* <TabHead
-          text={TabsEnum.BIND_MOUNTS}
-          active={tab === TabsEnum.BIND_MOUNTS}
-          onClick={() => setTab(TabsEnum.BIND_MOUNTS)}
-        /> */}
-        <TabHead
-          text={TabsEnum.EXEC}
-          active={tab === TabsEnum.EXEC}
-          onClick={() => setTab(TabsEnum.EXEC)}
-        />
-        <TabHead
-          text={TabsEnum.FILES}
-          active={tab === TabsEnum.FILES}
-          onClick={() => setTab(TabsEnum.FILES)}
-        />
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between pb-3 border-b mb-3">
+        <div className="flex items-center gap-5">
+          <Link to="/v2/container">
+            <Button
+              variant="ghost"
+              className="rounded-full p-3 text-night-200 hover:text-blue-500"
+            >
+              <FaChevronLeft />
+            </Button>
+          </Link>
+          <GoContainer size="1.5rem" color={color} />
+          <div className="flex flex-col">
+            <span className="font-semibold text-xl">
+              {getContainerName(container.Names)}
+            </span>
+            <Link
+              to="/images/$id"
+              params={{ id: getImageId(container.Id) }}
+              className="text-blue-500 underline underline-offset-2 font-bold drag-none text-sm"
+            >
+              {container.Image}
+            </Link>
+            <ContainerId container={container} />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col font-semibold">
+            <span className="text-sm">STATUS</span>
+            <span className="text-xs text-slate-400">{container.Status}</span>
+          </div>
+          <Button
+            className="w-[50px] p-3 bg-blue-600 text-white hover:bg-blue-500"
+            onClick={() => setTab(TabsEnum.EXEC)}
+          >
+            <MdTerminal size="1.3rem" />
+          </Button>
+
+          <div className="flex">
+            <Button className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-l-md">
+              <FaStop />
+            </Button>
+            <Button
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none border-x-2 border-blue-300"
+              disabled={container.State === "running"}
+            >
+              <FaPlay />
+            </Button>
+            <Button className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-r-md">
+              <MdRestartAlt size="1.3rem" />
+            </Button>
+          </div>
+
+          <RemoveContainerDialog container={container} />
+        </div>
       </div>
-      <div className="content border h-[calc(100vh-80px)] max-h-[calc(100vh-80px)]">
-        {tab === TabsEnum.LOGS && <LogsTab id={id} />}
-        {tab === TabsEnum.INSPECT && <InspectTab id={id} />}
-        {tab === TabsEnum.EXEC && <ExecTab id={id} />}
-        {tab === TabsEnum.FILES && <FilesTab id={id} />}
+
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-4 items-center text-sm">
+          <TabHead
+            text={TabsEnum.LOGS}
+            active={tab === TabsEnum.LOGS}
+            onClick={() => setTab(TabsEnum.LOGS)}
+          />
+          <TabHead
+            text={TabsEnum.INSPECT}
+            active={tab === TabsEnum.INSPECT}
+            onClick={() => setTab(TabsEnum.INSPECT)}
+          />
+          <TabHead
+            text={TabsEnum.EXEC}
+            active={tab === TabsEnum.EXEC}
+            onClick={() => setTab(TabsEnum.EXEC)}
+          />
+          <TabHead
+            text={TabsEnum.FILES}
+            active={tab === TabsEnum.FILES}
+            onClick={() => setTab(TabsEnum.FILES)}
+          />
+        </div>
+        <div className="content border h-[calc(100vh-80px)] max-h-[calc(100vh-80px)]">
+          {tab === TabsEnum.LOGS && <LogsTab id={id} />}
+          {tab === TabsEnum.INSPECT && <InspectTab id={id} />}
+          {tab === TabsEnum.EXEC && <ExecTab id={id} />}
+          {tab === TabsEnum.FILES && <FilesTab id={id} />}
+        </div>
       </div>
     </div>
   );

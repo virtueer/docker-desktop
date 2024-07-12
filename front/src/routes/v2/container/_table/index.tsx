@@ -5,7 +5,7 @@ import InfiniteLoading from "@/components/infinite-loading";
 import { TableCheckbox } from "@/components/table/checkbox";
 import { ExpandButton } from "@/table/container/components/expand-button";
 import { SortableHeader } from "@/table/container/components/sortable-header";
-import { getComposeStatus } from "@/table/container/helper";
+import { getComposeStatus, getImageId } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import {
   ColumnDef,
@@ -98,9 +98,7 @@ const columns: ColumnDef<GrouppedContainer>[] = [
     cell({ row, getValue }) {
       const data = row.original as ContainerInfo;
 
-      const id =
-        data.Labels?.["com.docker.compose.image"]?.replace("sha256:", "") ||
-        data.Image;
+      const id = getImageId(data.ImageID);
 
       return (
         <Link
@@ -165,7 +163,10 @@ const columns: ColumnDef<GrouppedContainer>[] = [
       headerStyle: { width: "25%" },
     },
   },
-  { id: "State", accessorKey: "State" },
+  {
+    id: "State",
+    accessorKey: "State",
+  },
   {
     accessorKey: "Actions",
     cell({ row }) {

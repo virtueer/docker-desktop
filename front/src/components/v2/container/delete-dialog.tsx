@@ -15,9 +15,10 @@ import { ContainerInfo } from "~types/v2/container/list";
 
 type Props = {
   container: ContainerInfo;
+  children?: JSX.Element;
 };
 
-export default function ContainerDeleteDialog({ container }: Props) {
+export default function ContainerDeleteDialog({ container, children }: Props) {
   const alertDialogTitle = "Delete container?";
 
   const alertDialogDescription = `The '${container!.Names}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
@@ -25,12 +26,16 @@ export default function ContainerDeleteDialog({ container }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="p-2 rounded-full h-auto hover:bg-slate-300"
-        >
-          <FaTrash />
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button
+            variant="ghost"
+            className="p-2 rounded-full h-auto hover:bg-slate-300"
+          >
+            <FaTrash />
+          </Button>
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent className="dark text-white">
         <AlertDialogHeader>
