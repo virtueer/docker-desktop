@@ -11,28 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as WatchIndexImport } from './routes/watch/index'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
 import { Route as StateIndexImport } from './routes/state/index'
-import { Route as PsIndexImport } from './routes/ps/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
-import { Route as ContainersIdImport } from './routes/containers.$id'
-import { Route as ComposeNameImport } from './routes/compose/$name'
 import { Route as V2ContainerIndexImport } from './routes/v2/container/index'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
 import { Route as V2ContainerIdImport } from './routes/v2.container.$id'
 import { Route as V2ComposeNameImport } from './routes/v2/compose/$name'
-import { Route as ContainersIdLogsImport } from './routes/containers/$id/logs'
-import { Route as ContainersIdInspectImport } from './routes/containers/$id/inspect'
-import { Route as ContainersIdFilesImport } from './routes/containers/$id/files'
-import { Route as ContainersIdExecImport } from './routes/containers/$id/exec'
 
 // Create/Update Routes
-
-const WatchIndexRoute = WatchIndexImport.update({
-  path: '/watch/',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const VolumesIndexRoute = VolumesIndexImport.update({
   path: '/volumes/',
@@ -44,23 +31,8 @@ const StateIndexRoute = StateIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PsIndexRoute = PsIndexImport.update({
-  path: '/ps/',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const ImagesIndexRoute = ImagesIndexImport.update({
   path: '/images/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ContainersIdRoute = ContainersIdImport.update({
-  path: '/containers/$id',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ComposeNameRoute = ComposeNameImport.update({
-  path: '/compose/$name',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -84,56 +56,15 @@ const V2ComposeNameRoute = V2ComposeNameImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ContainersIdLogsRoute = ContainersIdLogsImport.update({
-  path: '/logs',
-  getParentRoute: () => ContainersIdRoute,
-} as any)
-
-const ContainersIdInspectRoute = ContainersIdInspectImport.update({
-  path: '/inspect',
-  getParentRoute: () => ContainersIdRoute,
-} as any)
-
-const ContainersIdFilesRoute = ContainersIdFilesImport.update({
-  path: '/files',
-  getParentRoute: () => ContainersIdRoute,
-} as any)
-
-const ContainersIdExecRoute = ContainersIdExecImport.update({
-  path: '/exec',
-  getParentRoute: () => ContainersIdRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/compose/$name': {
-      id: '/compose/$name'
-      path: '/compose/$name'
-      fullPath: '/compose/$name'
-      preLoaderRoute: typeof ComposeNameImport
-      parentRoute: typeof rootRoute
-    }
-    '/containers/$id': {
-      id: '/containers/$id'
-      path: '/containers/$id'
-      fullPath: '/containers/$id'
-      preLoaderRoute: typeof ContainersIdImport
-      parentRoute: typeof rootRoute
-    }
     '/images/': {
       id: '/images/'
       path: '/images'
       fullPath: '/images'
       preLoaderRoute: typeof ImagesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/ps/': {
-      id: '/ps/'
-      path: '/ps'
-      fullPath: '/ps'
-      preLoaderRoute: typeof PsIndexImport
       parentRoute: typeof rootRoute
     }
     '/state/': {
@@ -149,41 +80,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/volumes'
       preLoaderRoute: typeof VolumesIndexImport
       parentRoute: typeof rootRoute
-    }
-    '/watch/': {
-      id: '/watch/'
-      path: '/watch'
-      fullPath: '/watch'
-      preLoaderRoute: typeof WatchIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/containers/$id/exec': {
-      id: '/containers/$id/exec'
-      path: '/exec'
-      fullPath: '/containers/$id/exec'
-      preLoaderRoute: typeof ContainersIdExecImport
-      parentRoute: typeof ContainersIdImport
-    }
-    '/containers/$id/files': {
-      id: '/containers/$id/files'
-      path: '/files'
-      fullPath: '/containers/$id/files'
-      preLoaderRoute: typeof ContainersIdFilesImport
-      parentRoute: typeof ContainersIdImport
-    }
-    '/containers/$id/inspect': {
-      id: '/containers/$id/inspect'
-      path: '/inspect'
-      fullPath: '/containers/$id/inspect'
-      preLoaderRoute: typeof ContainersIdInspectImport
-      parentRoute: typeof ContainersIdImport
-    }
-    '/containers/$id/logs': {
-      id: '/containers/$id/logs'
-      path: '/logs'
-      fullPath: '/containers/$id/logs'
-      preLoaderRoute: typeof ContainersIdLogsImport
-      parentRoute: typeof ContainersIdImport
     }
     '/v2/compose/$name': {
       id: '/v2/compose/$name'
@@ -219,18 +115,9 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  ComposeNameRoute,
-  ContainersIdRoute: ContainersIdRoute.addChildren({
-    ContainersIdExecRoute,
-    ContainersIdFilesRoute,
-    ContainersIdInspectRoute,
-    ContainersIdLogsRoute,
-  }),
   ImagesIndexRoute,
-  PsIndexRoute,
   StateIndexRoute,
   VolumesIndexRoute,
-  WatchIndexRoute,
   V2ComposeNameRoute,
   V2ContainerIdRoute,
   ImagesIdIndexRoute,
@@ -244,61 +131,23 @@ export const routeTree = rootRoute.addChildren({
   "routes": {
     "__root__": {
       "children": [
-        "/compose/$name",
-        "/containers/$id",
         "/images/",
-        "/ps/",
         "/state/",
         "/volumes/",
-        "/watch/",
         "/v2/compose/$name",
         "/v2/container/$id",
         "/images/$id/",
         "/v2/container/"
       ]
     },
-    "/compose/$name": {
-      "filePath": "compose/$name.tsx"
-    },
-    "/containers/$id": {
-      "filePath": "containers.$id.tsx",
-      "children": [
-        "/containers/$id/exec",
-        "/containers/$id/files",
-        "/containers/$id/inspect",
-        "/containers/$id/logs"
-      ]
-    },
     "/images/": {
       "filePath": "images/index.tsx"
-    },
-    "/ps/": {
-      "filePath": "ps/index.tsx"
     },
     "/state/": {
       "filePath": "state/index.tsx"
     },
     "/volumes/": {
       "filePath": "volumes/index.tsx"
-    },
-    "/watch/": {
-      "filePath": "watch/index.tsx"
-    },
-    "/containers/$id/exec": {
-      "filePath": "containers/$id/exec.tsx",
-      "parent": "/containers/$id"
-    },
-    "/containers/$id/files": {
-      "filePath": "containers/$id/files.tsx",
-      "parent": "/containers/$id"
-    },
-    "/containers/$id/inspect": {
-      "filePath": "containers/$id/inspect.tsx",
-      "parent": "/containers/$id"
-    },
-    "/containers/$id/logs": {
-      "filePath": "containers/$id/logs.tsx",
-      "parent": "/containers/$id"
     },
     "/v2/compose/$name": {
       "filePath": "v2/compose/$name.tsx"

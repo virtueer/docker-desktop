@@ -35,7 +35,7 @@ export function ComposeIcon({
 
   return (
     <Link
-      to={"/compose/$name"}
+      to={"/v2/compose/$name"}
       params={{ name: compose.name }}
       className="text-blue-500"
     >
