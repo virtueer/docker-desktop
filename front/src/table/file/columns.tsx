@@ -37,6 +37,7 @@ export const columns: ColumnDef<TData>[] = [
     header: "Name",
     meta: {
       headerClass: "w-full",
+      cellClass: "p-2",
     },
     cell({ row, table }) {
       const visibility =
@@ -86,7 +87,7 @@ export const columns: ColumnDef<TData>[] = [
       return bytes(value, { unitSeparator: " " });
     },
     meta: {
-      cellClass: "whitespace-nowrap",
+      cellClass: "whitespace-nowrap p-2",
     },
   },
   {
@@ -96,11 +97,14 @@ export const columns: ColumnDef<TData>[] = [
       return <TimeAgo date={row.original.modify} />;
     },
     meta: {
-      cellClass: "whitespace-nowrap",
+      cellClass: "whitespace-nowrap p-2",
     },
   },
   {
     accessorFn: (data) => data.permission.symbolic,
     header: "Mode",
+    meta: {
+      cellClass: "whitespace-nowrap p-2",
+    },
   },
 ];

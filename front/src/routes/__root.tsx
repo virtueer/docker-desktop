@@ -18,7 +18,7 @@ function RootPage() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-w-screen w-screen max-w-screen min-h-screen h-screen max-h-screen bg-night-500 text-white dark overflow-hidden">
         <Sidebar />
-        <div className="w-full p-5 overflow-auto">
+        <div className="w-full p-5 pl-0 overflow-auto">
           <Outlet />
         </div>
         <Toaster />

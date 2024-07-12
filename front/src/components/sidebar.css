@@ -1,0 +1,15 @@
+#sidebar-content:hover + #sidebar-toggle {
+  opacity: 1;
+}
+
+#sidebar-toggle:hover {
+  opacity: 1;
+}
+
+#sidebar-toggle:focus {
+  opacity: 1;
+}
+
+#sidebar-toggle {
+  opacity: 0;
+}

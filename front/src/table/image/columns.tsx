@@ -33,6 +33,9 @@ export const columns: ColumnDef<TData>[] = [
         />
       );
     },
+    meta: {
+      cellClass: "p-2",
+    },
   },
   {
     accessorKey: "Repository",
