@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
-import ContainerDeleteDialog from "@/components/v2/container/delete-dialog";
-import ContainerPlayStop from "@/components/v2/container/play-stop";
-import ContainerThreeDots from "@/components/v2/container/three-dots";
+import ContainerDeleteDialog from "@/components/container/delete-dialog";
+import ContainerPlayStop from "@/components/container/play-stop";
+import ContainerThreeDots from "@/components/container/three-dots";
 import { getColorByState, getContainerName } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";

@@ -1,11 +1,11 @@
 import { Row } from "@tanstack/react-table";
 import { Compose, ContainerInfo } from "~types/v2/container/list";
-import ComposeDeleteDialog from "@/components/v2/compose/delete-dialog";
-import ComposePlayStop from "@/components/v2/compose/play-stop";
-import ComposeThreeDots from "@/components/v2/compose/three-dots";
-import ContainerDeleteDialog from "@/components/v2/container/delete-dialog";
-import ContainerPlayStop from "@/components/v2/container/play-stop";
-import ContainerThreeDots from "@/components/v2/container/three-dots";
+import ComposeDeleteDialog from "@/components/compose/delete-dialog";
+import ComposePlayStop from "@/components/compose/play-stop";
+import ComposeThreeDots from "@/components/compose/three-dots";
+import ContainerDeleteDialog from "@/components/container/delete-dialog";
+import ContainerPlayStop from "@/components/container/play-stop";
+import ContainerThreeDots from "@/components/container/three-dots";
 
 export function Actions({ row }: { row: Row<any> }) {
   const isCompose = !!(row.original as any).name;

@@ -48,7 +48,7 @@ export default function Sidebar() {
       <div id="sidebar-content" className="flex flex-col p-3 border-r-2 gap-1">
         <SidebarItem
           open={open}
-          to="/v2/container"
+          to="/container"
           Icon={GoContainer}
           text="Containers"
         />

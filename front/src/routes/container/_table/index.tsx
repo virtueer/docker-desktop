@@ -1,5 +1,5 @@
-import { ComposeIcon } from "@/components/container/v2/compose-icon";
-import { ContainerIcon } from "@/components/container/v2/container-icon";
+import { ComposeIcon } from "@/components/container/compose-icon";
+import { ContainerIcon } from "@/components/container/container-icon";
 import { DataTable } from "@/components/data-table";
 import InfiniteLoading from "@/components/infinite-loading";
 import { TableCheckbox } from "@/components/table/checkbox";

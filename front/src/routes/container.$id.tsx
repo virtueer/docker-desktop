@@ -1,6 +1,6 @@
-import RemoveContainerDialog from "@/components/container/v2/remove-container-dialog";
+import RemoveContainerDialog from "@/components/container/remove-container-dialog";
 import { Button } from "@/components/ui/button";
-import ContainerId from "@/components/v2/container/container-id";
+import ContainerId from "@/components/container/container-id";
 import { TabsEnum } from "@/constants";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/store";
@@ -16,10 +16,10 @@ import { FaChevronLeft } from "react-icons/fa6";
 import { GoContainer } from "react-icons/go";
 import { MdRestartAlt, MdTerminal } from "react-icons/md";
 import { ContainerInfo } from "~types/v2/container/list";
-import ExecTab from "./v2/container/$id/_exec";
-import FilesTab from "./v2/container/$id/_files";
-import InspectTab from "./v2/container/$id/_inspect";
-import LogsTab from "./v2/container/$id/_logs";
+import ExecTab from "./container/$id/_exec";
+import FilesTab from "./container/$id/_files";
+import InspectTab from "./container/$id/_inspect";
+import LogsTab from "./container/$id/_logs";
 
 function TabHead({
   text,
@@ -43,7 +43,7 @@ function TabHead({
   );
 }
 
-export const Route = createFileRoute("/v2/container/$id")({
+export const Route = createFileRoute("/container/$id")({
   component: Page,
 });
 
@@ -61,7 +61,7 @@ function Page() {
     <div className="flex flex-col">
       <div className="flex items-center justify-between pb-3 border-b mb-3">
         <div className="flex items-center gap-5">
-          <Link to="/v2/container">
+          <Link to="/container">
             <Button
               variant="ghost"
               className="rounded-full p-3 text-night-200 hover:text-blue-500"

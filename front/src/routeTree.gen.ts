@@ -14,10 +14,10 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
 import { Route as StateIndexImport } from './routes/state/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
-import { Route as V2ContainerIndexImport } from './routes/v2/container/index'
+import { Route as ContainerIndexImport } from './routes/container/index'
+import { Route as ContainerIdImport } from './routes/container.$id'
+import { Route as ComposeNameImport } from './routes/compose/$name'
 import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
-import { Route as V2ContainerIdImport } from './routes/v2.container.$id'
-import { Route as V2ComposeNameImport } from './routes/v2/compose/$name'
 
 // Create/Update Routes
 
@@ -36,8 +36,18 @@ const ImagesIndexRoute = ImagesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const V2ContainerIndexRoute = V2ContainerIndexImport.update({
-  path: '/v2/container/',
+const ContainerIndexRoute = ContainerIndexImport.update({
+  path: '/container/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContainerIdRoute = ContainerIdImport.update({
+  path: '/container/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ComposeNameRoute = ComposeNameImport.update({
+  path: '/compose/$name',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,20 +56,31 @@ const ImagesIdIndexRoute = ImagesIdIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const V2ContainerIdRoute = V2ContainerIdImport.update({
-  path: '/v2/container/$id',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const V2ComposeNameRoute = V2ComposeNameImport.update({
-  path: '/v2/compose/$name',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/compose/$name': {
+      id: '/compose/$name'
+      path: '/compose/$name'
+      fullPath: '/compose/$name'
+      preLoaderRoute: typeof ComposeNameImport
+      parentRoute: typeof rootRoute
+    }
+    '/container/$id': {
+      id: '/container/$id'
+      path: '/container/$id'
+      fullPath: '/container/$id'
+      preLoaderRoute: typeof ContainerIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/container/': {
+      id: '/container/'
+      path: '/container'
+      fullPath: '/container'
+      preLoaderRoute: typeof ContainerIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/images/': {
       id: '/images/'
       path: '/images'
@@ -81,32 +102,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VolumesIndexImport
       parentRoute: typeof rootRoute
     }
-    '/v2/compose/$name': {
-      id: '/v2/compose/$name'
-      path: '/v2/compose/$name'
-      fullPath: '/v2/compose/$name'
-      preLoaderRoute: typeof V2ComposeNameImport
-      parentRoute: typeof rootRoute
-    }
-    '/v2/container/$id': {
-      id: '/v2/container/$id'
-      path: '/v2/container/$id'
-      fullPath: '/v2/container/$id'
-      preLoaderRoute: typeof V2ContainerIdImport
-      parentRoute: typeof rootRoute
-    }
     '/images/$id/': {
       id: '/images/$id/'
       path: '/images/$id'
       fullPath: '/images/$id'
       preLoaderRoute: typeof ImagesIdIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/v2/container/': {
-      id: '/v2/container/'
-      path: '/v2/container'
-      fullPath: '/v2/container'
-      preLoaderRoute: typeof V2ContainerIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -115,13 +115,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
+  ComposeNameRoute,
+  ContainerIdRoute,
+  ContainerIndexRoute,
   ImagesIndexRoute,
   StateIndexRoute,
   VolumesIndexRoute,
-  V2ComposeNameRoute,
-  V2ContainerIdRoute,
   ImagesIdIndexRoute,
-  V2ContainerIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -131,14 +131,23 @@ export const routeTree = rootRoute.addChildren({
   "routes": {
     "__root__": {
       "children": [
+        "/compose/$name",
+        "/container/$id",
+        "/container/",
         "/images/",
         "/state/",
         "/volumes/",
-        "/v2/compose/$name",
-        "/v2/container/$id",
-        "/images/$id/",
-        "/v2/container/"
+        "/images/$id/"
       ]
+    },
+    "/compose/$name": {
+      "filePath": "compose/$name.tsx"
+    },
+    "/container/$id": {
+      "filePath": "container.$id.tsx"
+    },
+    "/container/": {
+      "filePath": "container/index.tsx"
     },
     "/images/": {
       "filePath": "images/index.tsx"
@@ -149,17 +158,8 @@ export const routeTree = rootRoute.addChildren({
     "/volumes/": {
       "filePath": "volumes/index.tsx"
     },
-    "/v2/compose/$name": {
-      "filePath": "v2/compose/$name.tsx"
-    },
-    "/v2/container/$id": {
-      "filePath": "v2.container.$id.tsx"
-    },
     "/images/$id/": {
       "filePath": "images/$id/index.tsx"
-    },
-    "/v2/container/": {
-      "filePath": "v2/container/index.tsx"
     }
   }
 }

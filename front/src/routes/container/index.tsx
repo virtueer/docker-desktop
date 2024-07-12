@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import { useState } from "react";
 
-export const Route = createFileRoute("/v2/container/")({
+export const Route = createFileRoute("/container/")({
   component: Page,
 });
 

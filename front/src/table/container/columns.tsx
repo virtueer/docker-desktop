@@ -127,7 +127,7 @@ export const columns: ColumnDef<TData>[] = [
 
       return (
         <Link
-          to={isCompose ? "/compose/$name" : "/containers/$id"}
+          to={isCompose ? "/compose/$name" : "/container/$id"}
           params={isCompose ? { name: compose.name } : { id: dockerPs.ID }}
         >
           <div className="flex items-center gap-3">

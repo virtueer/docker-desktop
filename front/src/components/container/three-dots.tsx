@@ -11,20 +11,25 @@ import { HiDotsVertical } from "react-icons/hi";
 import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
+import { ContainerInfo } from "~types/v2/container/list";
 
-export default function ThreeDot() {
+type Props = {
+  container: ContainerInfo;
+};
+
+export default function ContainerThreeDots({ container }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="p-2 rounded-full h-auto hover:bg-night-400"
+          className="p-2 rounded-full h-auto hover:bg-slate-300"
         >
           <HiDotsVertical />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="dark">
-        <Link to="/">
+        <Link to="/container/$id" params={{ id: container.Id }}>
           <DropdownMenuItem className="gap-2 cursor-pointer">
             <IoEye size="1.2rem" />
             View Details

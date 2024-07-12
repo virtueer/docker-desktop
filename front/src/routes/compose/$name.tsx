@@ -4,7 +4,7 @@ import { Compose } from "~types/v2/container/list";
 import Container from "./_container";
 import ComposeLogsTerminal from "./_terminal";
 
-export const Route = createFileRoute("/v2/compose/$name")({
+export const Route = createFileRoute("/compose/$name")({
   component: Page,
 });
 

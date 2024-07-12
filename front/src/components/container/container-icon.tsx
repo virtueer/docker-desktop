@@ -1,4 +1,4 @@
-import ContainerId from "@/components/v2/container/container-id";
+import ContainerId from "@/components/container/container-id";
 import { getColorByState, getContainerName } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
@@ -16,7 +16,7 @@ export function ContainerIcon({
 
   return (
     <Link
-      to={"/v2/container/$id"}
+      to={"/container/$id"}
       params={{ id: container.Id }}
       className="drag-none text-blue-500 font-bold"
     >
