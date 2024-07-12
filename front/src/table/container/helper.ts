@@ -96,3 +96,27 @@ export const getContainerName = (Names: string[]) => {
 export const getImageId = (ImageID: string) => {
   return ImageID?.replace("sha256:", "");
 };
+
+export const getComposeColor = (compose: Composev2) => {
+  let color = "";
+  const status = getComposeStatus(compose);
+  switch (true) {
+    case status.startsWith("Exited"):
+      color = EXITED_COLOR;
+      break;
+
+    case status.startsWith("Paused"):
+      color = PAUSED_COLOR;
+      break;
+
+    case !!compose.containers?.find((x) => x.State !== "running"):
+      color = PAUSED_COLOR;
+      break;
+
+    default:
+      color = RUNNING_COLOR;
+      break;
+  }
+
+  return color;
+};

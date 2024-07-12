@@ -1,8 +1,7 @@
+import { getComposeColor } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import { ImStack } from "react-icons/im";
 import { Compose } from "~types/v2/container/list";
-import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
-import { getComposeStatus } from "@/table/container/helper";
 
 export function ComposeIcon({
   compose,
@@ -13,25 +12,7 @@ export function ComposeIcon({
 }) {
   const paddingLeft = `${depth}rem`;
 
-  let color = "";
-  const status = getComposeStatus(compose);
-  switch (true) {
-    case status.startsWith("Exited"):
-      color = EXITED_COLOR;
-      break;
-
-    case status.startsWith("Paused"):
-      color = PAUSED_COLOR;
-      break;
-
-    case !!compose.containers?.find((x) => x.State !== "running"):
-      color = PAUSED_COLOR;
-      break;
-
-    default:
-      color = RUNNING_COLOR;
-      break;
-  }
+  const color = getComposeColor(compose);
 
   return (
     <Link

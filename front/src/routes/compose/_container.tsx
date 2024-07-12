@@ -12,7 +12,7 @@ export default function Container({ container }: { container: ContainerInfo }) {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="flex items-center">
-        <GoContainer size="1.5rem" color={color} />
+        <GoContainer size="1.5rem" className="min-w-[1.5rem]" color={color} />
         <div className="flex flex-col mx-5">
           <span className="whitespace-nowrap font-bold">
             {getContainerName(container.Names)}
