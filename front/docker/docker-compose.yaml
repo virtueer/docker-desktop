@@ -2,23 +2,23 @@ services:
   serv1:
     image: alpine
     command: sh -c "while true; do echo $(head /dev/urandom  | tr -dc A-Za-z0-9 | head -c 13) '->' $(date) '<-' $(head /dev/urandom  | tr -dc A-Za-z0-9 | head -c 13); sleep 10; done"
-  # serv2:
-  #   image: alpine
-  #   command: tail -f /dev/null
-  # serv3:
-  #   image: alpine
-  #   command: tail -f /dev/null
-  #   scale: 5
-  # serv4:
-  #   image: nginx
-  #   volumes:
-  #     - nginx_volume:/usr/share/nginx/html
-  # serv5:
-  #   image: nginx
-  #   scale: 10
-  # serv6:
-  #   image: busybox
-  #   command: tail -f /dev/null
+  serv2:
+    image: alpine
+    command: tail -f /dev/null
+  serv3:
+    image: alpine
+    command: tail -f /dev/null
+    scale: 5
+  serv4:
+    image: nginx
+    volumes:
+      - nginx_volume:/usr/share/nginx/html
+  serv5:
+    image: nginx
+    scale: 10
+  serv6:
+    image: busybox
+    command: tail -f /dev/null
 
 volumes:
   nginx_volume:

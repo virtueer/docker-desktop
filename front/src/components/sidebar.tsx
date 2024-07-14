@@ -29,11 +29,11 @@ function SidebarItem({
         variant="ghost"
         className="gap-5 justify-start overflow-hidden"
         style={{
-          width: open ? "200px" : "50px",
+          width: open ? "230px" : "50px",
           transition: "width .25s ease-in-out",
         }}
       >
-        <Icon size="1.25rem" className="relative min-w-[1.25rem]" />
+        <Icon size="1.25rem" className="relative min-w-[1.5rem]" />
         {text}
       </Button>
     </Link>
@@ -45,7 +45,10 @@ export default function Sidebar() {
 
   return (
     <div className="flex">
-      <div id="sidebar-content" className="flex flex-col p-3 border-r-2 gap-1">
+      <div
+        id="sidebar-content"
+        className="flex flex-col p-3 border-r-2 gap-1 bg-night-800"
+      >
         <SidebarItem
           open={open}
           to="/container"

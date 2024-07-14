@@ -62,7 +62,7 @@ function Page() {
               className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-r-md border-l-2"
               disabled={!compose.containers.find((x) => x.State === "running")}
             >
-              <FaStop size="1.3rem" />
+              <FaStop size="1.1rem" />
             </Button>
           </div>
 
@@ -70,8 +70,8 @@ function Page() {
         </div>
       </div>
 
-      <div className="flex gap-3 w-full h-full overflow-hidden">
-        <div className="flex flex-col w-fit scrollbar">
+      <div className="flex gap-3 w-full h-full">
+        <div className="flex flex-col w-[400px] overflow-hidden overflow-y-auto scrollbar scrollbar-thin">
           {compose.containers.map((container) => (
             <Container container={container} key={container.Id} />
           ))}

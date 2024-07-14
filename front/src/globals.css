@@ -81,6 +81,11 @@
     height: 10px;
   }
 
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
   .scrollbar::-webkit-scrollbar-track {
     background: #161e22;
   }
