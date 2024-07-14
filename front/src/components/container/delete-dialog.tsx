@@ -9,9 +9,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { FaTrash } from "react-icons/fa";
 import { ContainerInfo } from "~types/v2/container/list";
+import { TooltipButton } from "../TooltipButton";
 
 type Props = {
   container: ContainerInfo;
@@ -25,16 +25,17 @@ export default function ContainerDeleteDialog({ container, children }: Props) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger>
         {children ? (
           children
         ) : (
-          <Button
+          <TooltipButton
+            tooltipText="Delete"
             variant="ghost"
-            className="p-2 rounded-full h-auto hover:bg-slate-300"
+            className="hover:text-red-500"
           >
             <FaTrash />
-          </Button>
+          </TooltipButton>
         )}
       </AlertDialogTrigger>
       <AlertDialogContent className="dark text-white">

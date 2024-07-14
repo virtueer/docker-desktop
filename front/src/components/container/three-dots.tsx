@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +11,7 @@ import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdContentCopy, MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
 import { ContainerInfo } from "~types/v2/container/list";
+import { TooltipButton } from "../TooltipButton";
 
 type Props = {
   container: ContainerInfo;
@@ -20,13 +20,14 @@ type Props = {
 export default function ContainerThreeDots({ container }: Props) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
+      <DropdownMenuTrigger style={{ boxShadow: "none", outline: "none" }}>
+        <TooltipButton
+          tooltipText="Show container actions"
+          delayDuration={0}
           variant="ghost"
-          className="p-2 rounded-full h-auto hover:bg-slate-300"
         >
           <HiDotsVertical />
-        </Button>
+        </TooltipButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="dark">
         <Link to="/container/$id" params={{ id: container.Id }}>

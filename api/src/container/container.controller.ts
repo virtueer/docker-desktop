@@ -26,8 +26,13 @@ export class ContainerController {
     return this.containerService.getContainerStats(id);
   }
 
-  @Post('/:id/pause')
+  @Post('/:id/stop')
   async stopContainer(@Param('id') id: string) {
     return this.containerService.stopContainer(id);
+  }
+
+  @Post('/:id/start')
+  async startContainer(@Param('id') id: string) {
+    return this.containerService.startContainer(id);
   }
 }

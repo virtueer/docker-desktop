@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +10,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { MdOutlineRestartAlt } from "react-icons/md";
 import { Compose } from "~types/v2/container/list";
+import { TooltipButton } from "../TooltipButton";
 
 type Props = {
   compose: Compose;
@@ -19,13 +19,14 @@ type Props = {
 export default function ComposeThreeDots({ compose }: Props) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
+      <DropdownMenuTrigger style={{ boxShadow: "none", outline: "none" }}>
+        <TooltipButton
+          tooltipText="Show container actions"
+          delayDuration={0}
           variant="ghost"
-          className="p-2 rounded-full h-auto hover:bg-slate-300"
         >
           <HiDotsVertical />
-        </Button>
+        </TooltipButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="dark">
         <Link to={"/compose/$name"} params={{ name: compose!.name }}>

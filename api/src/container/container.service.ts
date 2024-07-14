@@ -160,10 +160,6 @@ export class ContainerService implements OnModuleInit {
 
   async listContainers() {
     return Array.from(this.stateService.containers.values());
-    // const containers = await docker.listContainers({
-    //   all: true,
-    // });
-    // return containers;
   }
 
   async getContainer(id: string) {
@@ -187,8 +183,6 @@ export class ContainerService implements OnModuleInit {
       return { status: false, error: 'Not found' };
     }
 
-    const instance = docker.getContainer(id);
-
     this.stateService.loadings.add(container.Id);
 
     this.emitter.emit(
@@ -196,7 +190,8 @@ export class ContainerService implements OnModuleInit {
       this.stateService.containers,
     );
 
-    await new Promise((r) => setTimeout(r, 5000));
+    const instance = docker.getContainer(id);
+    await instance.stop();
 
     this.stateService.loadings.delete(container.Id);
 
@@ -205,6 +200,32 @@ export class ContainerService implements OnModuleInit {
       this.stateService.containers,
     );
 
-    return;
+    return { status: true };
+  }
+
+  async startContainer(id: string) {
+    const container = this.stateService.containers.get(id);
+    if (!container) {
+      return { status: false, error: 'Not found' };
+    }
+
+    this.stateService.loadings.add(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    const instance = docker.getContainer(id);
+    await instance.start();
+
+    this.stateService.loadings.delete(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    return { status: true };
   }
 }

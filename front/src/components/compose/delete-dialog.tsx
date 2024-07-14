@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FaTrash } from "react-icons/fa";
 import { Compose } from "~types/v2/container/list";
+import { TooltipButton } from "../TooltipButton";
 
 type Props = {
   compose: Compose;
@@ -24,13 +25,14 @@ export default function ComposeDeleteDialog({ compose }: Props) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
+      <AlertDialogTrigger>
+        <TooltipButton
+          tooltipText="Delete"
           variant="ghost"
-          className="p-2 rounded-full h-auto hover:bg-slate-300"
+          className="hover:text-red-500"
         >
           <FaTrash />
-        </Button>
+        </TooltipButton>
       </AlertDialogTrigger>
       <AlertDialogContent className="dark text-white">
         <AlertDialogHeader>
