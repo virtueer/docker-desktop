@@ -35,4 +35,19 @@ export class ContainerController {
   async startContainer(@Param('id') id: string) {
     return this.containerService.startContainer(id);
   }
+
+  @Post('/:id/pause')
+  async pauseContainer(@Param('id') id: string) {
+    return this.containerService.pauseContainer(id);
+  }
+
+  @Post('/:id/unpause')
+  async unpauseContainer(@Param('id') id: string) {
+    return this.containerService.unpauseContainer(id);
+  }
+
+  @Post('/:id/restart')
+  async restartContainer(@Param('id') id: string) {
+    return this.containerService.restartContainer(id);
+  }
 }

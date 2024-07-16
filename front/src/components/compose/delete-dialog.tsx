@@ -9,7 +9,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { FaTrash } from "react-icons/fa";
 import { Compose } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";

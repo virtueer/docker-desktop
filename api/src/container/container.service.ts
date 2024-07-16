@@ -228,4 +228,82 @@ export class ContainerService implements OnModuleInit {
 
     return { status: true };
   }
+
+  async pauseContainer(id: string) {
+    const container = this.stateService.containers.get(id);
+    if (!container) {
+      return { status: false, error: 'Not found' };
+    }
+
+    this.stateService.loadings.add(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    const instance = docker.getContainer(id);
+    await instance.pause();
+
+    this.stateService.loadings.delete(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    return { status: true };
+  }
+
+  async unpauseContainer(id: string) {
+    const container = this.stateService.containers.get(id);
+    if (!container) {
+      return { status: false, error: 'Not found' };
+    }
+
+    this.stateService.loadings.add(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    const instance = docker.getContainer(id);
+    await instance.unpause();
+
+    this.stateService.loadings.delete(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    return { status: true };
+  }
+
+  async restartContainer(id: string) {
+    const container = this.stateService.containers.get(id);
+    if (!container) {
+      return { status: false, error: 'Not found' };
+    }
+
+    this.stateService.loadings.add(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    const instance = docker.getContainer(id);
+    await instance.restart();
+
+    this.stateService.loadings.delete(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    return { status: true };
+  }
 }

@@ -10,9 +10,11 @@ import {
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
 import { ContainerInfo } from "~types/v2/container/list";
+import InfiniteLoading from "@/components/infinite-loading";
 
 export default function Container({ container }: { container: ContainerInfo }) {
   const color = getColorByState(container.State);
+
   return (
     <>
       <div className="flex items-center">
@@ -28,7 +30,11 @@ export default function Container({ container }: { container: ContainerInfo }) {
           >
             {container.Image}
           </Link>
-          <span className="capitalize">{container.State}</span>
+          {container.loading ? (
+            <InfiniteLoading width="100px" className="my-4" />
+          ) : (
+            <span className="capitalize">{container.State}</span>
+          )}
         </div>
         <ContainerPlayStop container={container} />
         <ContainerThreeDots container={container} />

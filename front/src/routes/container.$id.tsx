@@ -10,7 +10,7 @@ import {
   getImageId,
 } from "@/table/container/helper";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { GoContainer } from "react-icons/go";
@@ -33,7 +33,7 @@ function TabHead({
   return (
     <div
       className={cn(
-        "border-b-4 border-b-transparent px-3 pb-1 cursor-pointer hover:border-b-slate-700",
+        "capitalize border-b-4 border-b-transparent px-3 pb-1 cursor-pointer hover:border-b-slate-700",
         active && "!border-b-blue-500"
       )}
       onClick={onClick}
@@ -49,7 +49,20 @@ export const Route = createFileRoute("/container/$id")({
 
 function Page() {
   const id = useParams({ from: Route.id, select: (x) => x.id });
+  const searchTab = Route.useSearch({ select: (x) => (x as any).tab });
   const [tab, setTab] = useState<string>(TabsEnum.LOGS);
+
+  useEffect(() => {
+    console.log("searchtab", searchTab);
+    if (
+      Object.keys(TabsEnum)
+        .map((x) => x.toLowerCase())
+        .includes(searchTab)
+    ) {
+      console.log("searchtab", searchTab, "111");
+      setTab(searchTab);
+    }
+  }, [searchTab]);
 
   const container = useStore().containers.find(
     (x) => (x as ContainerInfo).Id === id

@@ -6,5 +6,8 @@ export type ApiRoutes = {
     list: ContainerInfo[];
     stop: StatusResponse | FailResponse;
     start: StatusResponse | FailResponse;
+    pause: StatusResponse | FailResponse;
+    unpause: StatusResponse | FailResponse;
+    restart: StatusResponse | FailResponse;
   };
 };
