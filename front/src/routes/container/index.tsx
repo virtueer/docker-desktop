@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { FaSearch } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ColumnFiltersState } from "@tanstack/react-table";
+import { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
+import SelectedActions from "@/components/selected/actions";
+import SelectedDelete from "@/components/selected/delete";
 
 export const Route = createFileRoute("/container/")({
   component: Page,
@@ -18,6 +20,7 @@ function Page() {
   const containers = useStore((state) => state.containers);
   const [show, setShow] = useState<boolean>(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   function handleSwitch() {
     setColumnFilters((oldValues) => {
@@ -80,27 +83,36 @@ function Page() {
         </Button>
       </div>
 
-      <div className="flex mb-3 gap-3">
-        <div className="border-2 min-w-[400px] rounded flex items-center gap-3 hover:border-white focus-within:!border-blue-500">
-          <FaSearch className="ml-3" />
-          <Input
-            className="border-0 p-0 m-0"
-            placeholder="Search"
-            style={{ boxShadow: "none" }}
-            onChange={handleSearch}
-          />
+      <div className="flex mb-3 gap-3 justify-between items-center">
+        <div className="flex gap-5">
+          <div className="border-2 min-w-[400px] rounded flex items-center gap-3 hover:border-white focus-within:!border-blue-500">
+            <FaSearch className="ml-3" />
+            <Input
+              className="border-0 p-0 m-0"
+              placeholder="Search"
+              style={{ boxShadow: "none" }}
+              onChange={handleSearch}
+            />
+          </div>
+          <div className="flex items-center gap-3 text-sm text-slate-400">
+            <Switch onClick={handleSwitch} />
+            Only show running containers
+          </div>
         </div>
-
-        <div className="flex items-center gap-3 text-sm text-slate-400">
-          <Switch onClick={handleSwitch} />
-          Only show running containers
-        </div>
+        {Object.keys(rowSelection).length !== 0 && (
+          <div className="flex gap-5">
+            <SelectedDelete rowSelection={rowSelection} />
+            <SelectedActions rowSelection={rowSelection} />
+          </div>
+        )}
       </div>
 
       <ContainerTable
         data={containers}
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
       />
     </div>
   );

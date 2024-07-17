@@ -9,5 +9,6 @@ export type ApiRoutes = {
     pause: StatusResponse | FailResponse;
     unpause: StatusResponse | FailResponse;
     restart: StatusResponse | FailResponse;
+    delete: StatusResponse | FailResponse;
   };
 };

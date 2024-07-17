@@ -64,9 +64,10 @@ function Page() {
     }
   }, [searchTab]);
 
-  const container = useStore().containers.find(
-    (x) => (x as ContainerInfo).Id === id
-  ) as ContainerInfo;
+  const container = useStore(
+    (x) =>
+      x.containers.find((x) => (x as ContainerInfo).Id === id) as ContainerInfo
+  );
 
   const color = getColorByState(container.State);
 

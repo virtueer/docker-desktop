@@ -1,4 +1,3 @@
-import { deleteContainer } from "@/api/delete-container";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,34 +9,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Table } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
-import { Compose, DockerPs } from "~types/ps";
+import { RowSelectionState } from "@tanstack/react-table";
+import { useState } from "react";
+import { getContainersByIds } from "./helper";
+import { getContainerName } from "@/table/container/helper";
+import { useDeleteContainer } from "@/api/v2/container/delete";
 
-export default function Delete({ table }: { table: Table<any> }) {
+export default function SelectedDelete({
+  rowSelection,
+}: {
+  rowSelection: RowSelectionState;
+}) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const selectedRows = useMemo(
-    () => table.getSelectedRowModel().flatRows,
-    [deleting, open]
-  );
+
+  const containers = getContainersByIds(Object.keys(rowSelection));
+  const { mutateAsync: deleteContainer } = useDeleteContainer();
 
   async function handleDelete() {
     setDeleting(true);
 
-    const containers = selectedRows
-      .filter((row) => !row.original.name)
-      .map((x) => x.original) as DockerPs[];
-
-    const promises = [];
     for (const container of containers) {
-      console.log(container.ID);
-      promises.push(deleteContainer(container.ID));
+      deleteContainer(container.Id);
     }
 
-    promises.push(new Promise((r) => setTimeout(r, 5000)));
-    await Promise.all(promises);
-    table.resetRowSelection();
     setOpen(false);
   }
 
@@ -46,29 +41,28 @@ export default function Delete({ table }: { table: Table<any> }) {
       <AlertDialogTrigger asChild>
         <Button variant="destructive">Delete</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="dark text-white">
+      <AlertDialogContent className="dark text-white bg-night-500 px-5 py-4">
         <AlertDialogHeader>
           <AlertDialogTitle>Delete items?</AlertDialogTitle>
           <AlertDialogDescription asChild>
-            <div>
+            <div className="max-h-[40vh] overflow-auto scrollbar">
               The following items are selected for deletion:
-              <ul className="list-disc pl-4 pt-2">
-                {selectedRows.map((row, index) => {
-                  const compose = row.original as Compose;
-                  const dockerPs = row.original as DockerPs;
-
-                  const text = compose?.name
-                    ? `${compose.name} (compose stack)`
-                    : `${dockerPs.Names} (container)`;
+              <ul className="text-white list-disc p-2 pl-4">
+                {containers.map((container, index) => {
+                  const text = `${getContainerName(container.Names)} (container)`;
 
                   return <li key={index}>{text}</li>;
                 })}
               </ul>
+              Any anonymous volumes associated with these containers are also
+              deleted.
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="bg-night-500 hover:bg-night:400 border-blue-500 border-2">
+            Cancel
+          </AlertDialogCancel>
           <Button
             className="bg-red-600 hover:bg-red-500 text-white"
             onClick={handleDelete}

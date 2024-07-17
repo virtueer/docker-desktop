@@ -15,6 +15,7 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   OnChangeFn,
+  RowSelectionState,
 } from "@tanstack/react-table";
 import {
   Compose,
@@ -47,7 +48,7 @@ const columns: ColumnDef<GrouppedContainer>[] = [
       <TableCheckbox table={table} position="cell" row={row} />
     ),
     meta: {
-      cellClass: "p-2 h-[50px] focus-within:bg-red-500",
+      cellClass: "p-2 h-[50px]",
     },
     filterFn: multiColumnFilterFn,
   },
@@ -183,25 +184,32 @@ type Props = {
   data: GrouppedContainer[];
   columnFilters: ColumnFiltersState;
   setColumnFilters: OnChangeFn<ColumnFiltersState>;
+  rowSelection: RowSelectionState;
+  setRowSelection: OnChangeFn<RowSelectionState>;
 };
 
 export function ContainerTable({
   data,
   columnFilters,
   setColumnFilters,
+  setRowSelection,
+  rowSelection,
 }: Props) {
   return (
     <DataTable
       columns={columns}
       data={data}
+      getRowId={(data) => (data as ContainerInfo).Id || (data as Compose).name}
       getSubRows={(data) => (data as Compose)?.containers}
       getCoreRowModel={getCoreRowModel()}
       getExpandedRowModel={getExpandedRowModel()}
       getFilteredRowModel={getFilteredRowModel()}
       onColumnFiltersChange={setColumnFilters}
+      onRowSelectionChange={setRowSelection}
       state={{
         columnVisibility: { State: false },
         columnFilters,
+        rowSelection,
       }}
     />
   );

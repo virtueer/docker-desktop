@@ -51,6 +51,12 @@ export class ContainerService implements OnModuleInit {
       this.updateContainer(container);
     }
 
+    if (containers.length === 0 && filters?.id?.length !== 0) {
+      for (const id of filters.id) {
+        this.stateService.containers.delete(id);
+      }
+    }
+
     this.emitter.emit(
       EMIT_EVENTS.CONTAINERS_UPDATED,
       this.stateService.containers,
@@ -296,6 +302,32 @@ export class ContainerService implements OnModuleInit {
 
     const instance = docker.getContainer(id);
     await instance.restart();
+
+    this.stateService.loadings.delete(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    return { status: true };
+  }
+
+  async deleteContainer(id: string) {
+    const container = this.stateService.containers.get(id);
+    if (!container) {
+      return { status: false, error: 'Not found' };
+    }
+
+    this.stateService.loadings.add(container.Id);
+
+    this.emitter.emit(
+      EMIT_EVENTS.CONTAINERS_UPDATED,
+      this.stateService.containers,
+    );
+
+    const instance = docker.getContainer(id);
+    await instance.remove({ force: true });
 
     this.stateService.loadings.delete(container.Id);
 

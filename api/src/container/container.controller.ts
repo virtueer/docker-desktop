@@ -50,4 +50,9 @@ export class ContainerController {
   async restartContainer(@Param('id') id: string) {
     return this.containerService.restartContainer(id);
   }
+
+  @Post('/:id/delete')
+  async deleteContainer(@Param('id') id: string) {
+    return this.containerService.deleteContainer(id);
+  }
 }

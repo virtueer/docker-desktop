@@ -11,9 +11,10 @@ import NotRunning from "./_components/not-running";
 import { updateNestedDataByPath } from "@/util";
 
 export default function FilesTab({ id }: { id: string }) {
-  const container = useStore().containers.find(
-    (x) => (x as ContainerInfo).Id === id
-  ) as ContainerInfo;
+  const container = useStore(
+    (x) =>
+      x.containers.find((x) => (x as ContainerInfo).Id === id) as ContainerInfo
+  );
 
   if (container.State !== "running") {
     return (
