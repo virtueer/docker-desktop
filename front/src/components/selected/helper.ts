@@ -1,5 +1,5 @@
 import { useStore } from "@/store";
-import { Compose, ContainerInfo } from "~types/v2/container/list";
+import { Compose, ContainerInfo } from "~types/container/";
 
 export const getContainersByIds = (ids: string[]) => {
   return useStore(

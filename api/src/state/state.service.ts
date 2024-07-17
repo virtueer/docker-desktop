@@ -2,8 +2,8 @@ import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { docker } from 'src/common/docker';
 import { groupContainers } from 'src/common/group-containers';
 import { ContainerService } from 'src/container/container.service';
-import { ContainerInfo } from '~types/v2/container/list';
-import { Events } from '~types/v2/events';
+import { ContainerInfo } from '~types/container';
+import { Events } from '~types/events';
 
 @Injectable()
 export class StateService implements OnModuleInit {

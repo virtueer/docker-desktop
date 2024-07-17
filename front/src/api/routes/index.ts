@@ -1,5 +1,7 @@
 import { FailResponse, StatusResponse } from "~types/base";
-import { ContainerInfo } from "~types/v2/container/list";
+import { ContainerInfo, ContainerInspect } from "~types/container";
+import { Image } from "~types/image";
+import { Volume } from "~types/volume";
 
 export type ApiRoutes = {
   container: {
@@ -10,5 +12,13 @@ export type ApiRoutes = {
     unpause: StatusResponse | FailResponse;
     restart: StatusResponse | FailResponse;
     delete: StatusResponse | FailResponse;
+    inspect: ContainerInspect;
+  };
+  image: {
+    list: Image[];
+    info: Image;
+  };
+  volume: {
+    list: { Volumes: Volume[]; Warnings: string[] };
   };
 };

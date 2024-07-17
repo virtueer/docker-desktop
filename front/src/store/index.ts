@@ -1,10 +1,6 @@
 import { socket } from "@/socket";
 import { create } from "zustand";
-import {
-  Compose,
-  ContainerInfo,
-  GrouppedContainer,
-} from "~types/v2/container/list";
+import { Compose, ContainerInfo, GrouppedContainer } from "~types/container/";
 
 type State = {
   containers: GrouppedContainer[];

@@ -5,7 +5,7 @@ import { ApiRoutes } from "../routes";
 async function containerList() {
   type ResponseType = ApiRoutes["container"]["list"];
 
-  const response = await api.get<ResponseType>(`/v2/container/list`);
+  const response = await api.get<ResponseType>(`/container/`);
   return response.data;
 }
 

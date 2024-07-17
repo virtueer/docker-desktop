@@ -1,5 +1,5 @@
 import { Row } from "@tanstack/react-table";
-import { Compose, ContainerInfo } from "~types/v2/container/list";
+import { Compose, ContainerInfo } from "~types/container/";
 import ComposeDeleteDialog from "@/components/compose/delete-dialog";
 import ComposePlayStop from "@/components/compose/play-stop";
 import ComposeThreeDots from "@/components/compose/three-dots";

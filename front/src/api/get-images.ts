@@ -1,28 +1,14 @@
+import { api } from "@/axios";
 import { useQuery } from "@tanstack/react-query";
-import { GetImagesResponse } from "~types/image";
-import { api } from "../axios";
+import { ApiRoutes } from "./routes";
 
 async function getImages() {
-  const response = await api.get<GetImagesResponse>(`/image`);
+  type ResponseType = ApiRoutes["image"]["list"];
+
+  const response = await api.get<ResponseType>(`/image/`);
   return response.data;
 }
 
-export async function getImagesWrapper() {
-  const response = await getImages();
-
-  if (!response.status) {
-    throw response.error;
-  }
-
-  return response;
-}
-
 export const useGetImages = () => {
-  return useQuery({
-    queryKey: ["images"],
-    queryFn: getImagesWrapper,
-    retry(_, error) {
-      return !error;
-    },
-  });
+  return useQuery({ queryKey: ["images"], queryFn: getImages });
 };

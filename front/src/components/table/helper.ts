@@ -1,7 +1,7 @@
 import { EXITED_COLOR, PAUSED_COLOR, RUNNING_COLOR } from "@/constants";
 import { toPascalCase } from "@/util";
 import { Compose, DockerPs } from "~types/ps";
-import { Compose as Composev2 } from "~types/v2/container/list";
+import { Compose as Composev2 } from "~types/container/";
 
 export const getStatus = (row: Compose | DockerPs) => {
   const isCompose = !!(row as any).name;

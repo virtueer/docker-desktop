@@ -2,14 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as Dockerode from 'dockerode';
 import { IncomingMessage } from 'http';
+import * as path from 'node:path';
 import { PassThrough } from 'node:stream';
 import { docker } from 'src/common/docker';
-import { StateService } from 'src/state/state.service';
-import { Events } from '~types/v2/events';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EMIT_EVENTS } from 'src/common/emit-events';
+import { StateService } from 'src/state/state.service';
+import { parse } from 'stat-json';
+import { File } from '~types/file';
+import { Events } from '~types/events';
+import { exec } from '../common/cp';
 
 @Injectable()
 export class ContainerService implements OnModuleInit {
@@ -25,7 +29,6 @@ export class ContainerService implements OnModuleInit {
     this.initialize();
   }
 
-  inspects = new Map<string, any>();
   statsStreams = new Map<string, IncomingMessage>();
   logsStreams = new Map<string, PassThrough>();
 
@@ -65,14 +68,8 @@ export class ContainerService implements OnModuleInit {
 
   async updateContainer(container: Dockerode.ContainerInfo) {
     const instance = docker.getContainer(container.Id);
-    this.updateInspect(instance);
     this.watchStats(instance, container.State !== 'running');
     this.watchLogs(instance, container);
-  }
-
-  async updateInspect(container: Dockerode.Container) {
-    const inspect = await container.inspect();
-    this.inspects.set(container.id, inspect);
   }
 
   async watchStats(container: Dockerode.Container, watch: boolean) {
@@ -336,5 +333,27 @@ export class ContainerService implements OnModuleInit {
     );
 
     return { status: true };
+  }
+
+  async getFiles(id: string, dest = '/') {
+    const dest_path = path.posix.normalize(dest + '/');
+    const command = `docker exec ${id} sh -c "ls -a ${dest_path} | xargs -I {} stat ${dest_path}{} || true"`;
+    const { stderr, stdout } = await exec(command);
+
+    if (stderr && !stdout) {
+      console.log('stderr', stderr, '---');
+      return { status: false, error: stderr };
+    }
+
+    return {
+      status: true,
+      data: parse(stdout, dest_path)
+        .filter((x) => !['..', '.'].includes(x.name))
+        .map((x) => ({
+          ...x,
+          path: path.posix.resolve(dest_path, x.name),
+          dir: path.posix.resolve(dest_path),
+        })) as File[],
+    };
   }
 }

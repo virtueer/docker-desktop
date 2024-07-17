@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/data-table";
+import { TimeAgo } from "@/components/timeago";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ColumnDef,
@@ -47,7 +48,10 @@ const columns: ColumnDef<Volume>[] = [
     },
   },
   {
-    accessorKey: "Status",
+    accessorKey: "CreatedAt",
+    cell({ row }) {
+      return <TimeAgo date={row.original.CreatedAt} />;
+    },
   },
 ];
 

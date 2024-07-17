@@ -1,28 +1,14 @@
+import { api } from "@/axios";
 import { useQuery } from "@tanstack/react-query";
-import { GetVolumesResponse } from "~types/volume";
-import { api } from "../axios";
+import { ApiRoutes } from "./routes";
 
 async function getVolumes() {
-  const response = await api.get<GetVolumesResponse>(`/volume`);
+  type ResponseType = ApiRoutes["volume"]["list"];
+
+  const response = await api.get<ResponseType>(`/volume/`);
   return response.data;
 }
 
-export async function getVolumesWrapper() {
-  const response = await getVolumes();
-
-  if (!response.status) {
-    throw response.error;
-  }
-
-  return response;
-}
-
-export const useGetvolumes = () => {
-  return useQuery({
-    queryKey: ["volumes"],
-    queryFn: getVolumesWrapper,
-    retry(_, error) {
-      return !error;
-    },
-  });
+export const useGetVolumes = () => {
+  return useQuery({ queryKey: ["volumes"], queryFn: getVolumes });
 };

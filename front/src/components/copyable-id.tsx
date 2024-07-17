@@ -8,18 +8,17 @@ import {
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { MdOutlineContentCopy } from "react-icons/md";
-import { ContainerInfo } from "~types/v2/container/list";
 
 type Props = {
-  container: ContainerInfo;
+  id: string;
 };
 
-export default function ContainerId({ container }: Props) {
+export default function CopyableId({ id }: Props) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy(e: any) {
     e.preventDefault();
-    navigator.clipboard.writeText(container.Id);
+    navigator.clipboard.writeText(id);
     setCopied(true);
     await new Promise((r) => setTimeout(r, 2500));
     setCopied(false);
@@ -28,7 +27,7 @@ export default function ContainerId({ container }: Props) {
   return (
     <div className="flex items-center">
       <span className="text-slate-300 text-xs cursor-auto select-text">
-        {container.Id.slice(0, 12)}
+        {id.slice(0, 12)}
       </span>
       <TooltipProvider>
         <Tooltip>

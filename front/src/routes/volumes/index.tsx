@@ -1,4 +1,4 @@
-import { useGetvolumes } from "@/api/get-volume-all";
+import { useGetVolumes } from "@/api/get-volume-all";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import VolumeTable from "./_table";
@@ -8,12 +8,12 @@ export const Route = createFileRoute("/volumes/")({
 });
 
 function Page() {
-  const { data } = useGetvolumes();
+  const { data } = useGetVolumes();
   const [rowSelection, setRowSelection] = useState({});
 
   return (
     <VolumeTable
-      data={data?.data || []}
+      data={data?.Volumes || []}
       rowSelection={rowSelection}
       setRowSelection={setRowSelection}
     />

@@ -1,6 +1,6 @@
 import { useStore } from "@/store";
 import { createFileRoute } from "@tanstack/react-router";
-import { Compose } from "~types/v2/container/list";
+import { Compose } from "~types/container/";
 import Container from "./_container";
 import ComposeLogsTerminal from "./_terminal";
 

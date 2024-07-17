@@ -9,7 +9,7 @@ import { FaPause } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { MdOutlineRestartAlt } from "react-icons/md";
-import { Compose } from "~types/v2/container/list";
+import { Compose } from "~types/container/";
 import { TooltipButton } from "../TooltipButton";
 
 type Props = {

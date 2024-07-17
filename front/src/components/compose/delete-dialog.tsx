@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { FaTrash } from "react-icons/fa";
-import { Compose } from "~types/v2/container/list";
+import { Compose } from "~types/container/";
 import { TooltipButton } from "../TooltipButton";
 
 type Props = {

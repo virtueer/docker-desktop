@@ -1,4 +1,3 @@
-import ContainerId from "@/components/container/container-id";
 import RemoveContainerDialog from "@/components/container/remove-container-dialog";
 import { Button } from "@/components/ui/button";
 import { TabsEnum } from "@/constants";
@@ -19,6 +18,7 @@ import ExecTab from "./container/$id/_exec";
 import FilesTab from "./container/$id/_files";
 import InspectTab from "./container/$id/_inspect";
 import LogsTab from "./container/$id/_logs";
+import CopyableId from "@/components/copyable-id";
 
 function TabHead({
   text,
@@ -97,7 +97,7 @@ function Page() {
             >
               {container.Image}
             </Link>
-            <ContainerId container={container} />
+            <CopyableId id={container.Id} />
           </div>
         </div>
 

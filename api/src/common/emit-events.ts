@@ -1,4 +1,4 @@
-import { ContainerInfo } from '~types/v2/container/list';
+import { ContainerInfo } from '~types/container';
 
 export enum EMIT_EVENTS {
   CONTAINERS_UPDATED = 'CONTAINERS_UPDATED',

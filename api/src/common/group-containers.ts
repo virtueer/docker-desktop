@@ -1,8 +1,4 @@
-import {
-  ContainerInfo,
-  Compose,
-  GrouppedContainer,
-} from '~types/v2/container/list';
+import { ContainerInfo, Compose, GrouppedContainer } from '~types/container';
 
 export function groupContainers(containers: ContainerInfo[]) {
   const composes = containers.reduce((data: Compose[], current) => {

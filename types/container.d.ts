@@ -1,10 +1,7 @@
-import { FailResponse, StatusResponse } from "./base";
+import * as Dockerode from "dockerode";
 
-export type GetContainerLogsResponse =
-  | GetContainerLogsResponseSuccess
-  | FailResponse;
+export type ContainerInfo = Dockerode.ContainerInfo & { loading?: boolean };
+export type Compose = { name: string; containers: ContainerInfo[] };
+export type GrouppedContainer = Compose | ContainerInfo;
 
-export interface GetContainerLogsResponseSuccess extends StatusResponse {
-  status: true;
-  data: string;
-}
+export type ContainerInspect = Dockerode.ContainerInspectInfo;

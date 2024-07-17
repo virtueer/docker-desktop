@@ -1,30 +1,8 @@
 import { useGetImage } from "@/api/get-image";
-import { getImageByName } from "@/api/get-image-by-name";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/images/$id/")({
-  async beforeLoad({ params: { id } }) {
-    if (id.length === 64) {
-      return;
-    }
-
-    const image = await getImageByName(id).catch();
-
-    if (!image || !image.status) {
-      throw redirect({ to: "/images" });
-    }
-
-    if (image.status) {
-      image.status;
-    }
-
-    throw redirect({
-      to: "/images/$id",
-      params: { id: image.data.ID.replace("sha256:", "") },
-    });
-  },
   component: Page,
 });
 

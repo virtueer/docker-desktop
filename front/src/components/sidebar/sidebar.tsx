@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { GoContainer } from "react-icons/go";
 import { RxCodesandboxLogo } from "react-icons/rx";
 import { TfiHarddrive } from "react-icons/tfi";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 function SidebarItem({
   open,

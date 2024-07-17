@@ -5,7 +5,7 @@ import { ApiRoutes } from "../routes";
 async function deleteContainer(id: string) {
   type ResponseType = ApiRoutes["container"]["delete"];
 
-  const response = await api.post<ResponseType>(`/v2/container/${id}/delete`);
+  const response = await api.post<ResponseType>(`/container/${id}/delete`);
   return response.data;
 }
 

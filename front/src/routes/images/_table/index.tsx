@@ -6,11 +6,13 @@ import {
   RowSelectionState,
 } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
+import CopyableId from "@/components/copyable-id";
+import { getImageId } from "@/components/table/helper";
+import { TimeAgo } from "@/components/timeago";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
-import { MdContentCopy } from "react-icons/md";
+import bytes from "bytes";
 import { Image } from "~types/image";
 
 const columns: ColumnDef<Image>[] = [
@@ -44,10 +46,11 @@ const columns: ColumnDef<Image>[] = [
     },
   },
   {
-    accessorKey: "Repository",
+    id: "Name",
+    header: "Name",
     cell({ row }) {
-      const value = row.original.Repository;
-      const ID = row.original.ID.replace("sha256:", "");
+      const value = row.original.RepoTags?.[0]?.split(":")[0] || "<none>";
+      const ID = getImageId(row.original.Id);
 
       return (
         <Link
@@ -56,21 +59,7 @@ const columns: ColumnDef<Image>[] = [
           params={{ id: ID }}
         >
           <span className="underline underline-offset-4">{value}</span>
-          <span
-            className="flex gap-1 items-center text-white text-xs w-fit"
-            onClick={(e) => {
-              e.preventDefault();
-              navigator.clipboard.writeText(ID);
-            }}
-          >
-            {ID.slice(0, 12)}
-            <Button
-              variant="ghost"
-              className="p-0 hover:bg-transparent focus:text-red-200 h-fit"
-            >
-              <MdContentCopy />
-            </Button>
-          </span>
+          <CopyableId id={row.original.Id.slice(7)} />
         </Link>
       );
     },
@@ -79,17 +68,24 @@ const columns: ColumnDef<Image>[] = [
     },
   },
   {
-    accessorKey: "Tag",
+    id: "Tag",
+    header: "Tag",
+    cell({ row }) {
+      return row.original.RepoTags?.[0]?.split(":")[1] || "latest";
+    },
   },
   {
-    accessorKey: "CreatedSince",
+    accessorKey: "Created",
     header: "Created",
+    cell({ row }) {
+      return <TimeAgo date={row.original.Created * 1000} />;
+    },
   },
   {
-    accessorKey: "VirtualSize",
+    accessorKey: "Size",
     header: "Size",
-    cell({ getValue }) {
-      return (getValue() as string).replace(/(\d+\.?\d*)([A-Za-z]+)/, "$1 $2"); // 1.21GB -> 1.21 GB
+    cell({ row }) {
+      return bytes(row.original.Size, { unitSeparator: " " });
     },
   },
 ];

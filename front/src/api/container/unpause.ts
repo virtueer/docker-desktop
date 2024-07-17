@@ -5,7 +5,7 @@ import { ApiRoutes } from "../routes";
 async function unpauseContainer(id: string) {
   type ResponseType = ApiRoutes["container"]["unpause"];
 
-  const response = await api.post<ResponseType>(`/v2/container/${id}/unpause`);
+  const response = await api.post<ResponseType>(`/container/${id}/unpause`);
   return response.data;
 }
 

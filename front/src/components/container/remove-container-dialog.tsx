@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { FaTrash } from "react-icons/fa";
-import { ContainerInfo } from "~types/v2/container/list";
+import { ContainerInfo } from "~types/container/";
 import {
   Tooltip,
   TooltipContent,

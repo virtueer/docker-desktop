@@ -1,18 +1,14 @@
+import { api } from "@/axios";
 import { useQuery } from "@tanstack/react-query";
-import { GetImageResponse } from "~types/image";
-import { api } from "../axios";
+import { ApiRoutes } from "./routes";
 
 async function getImage(id: string) {
-  const response = await api.get<GetImageResponse>(`/image/${id}`);
+  type ResponseType = ApiRoutes["image"]["info"];
+
+  const response = await api.get<ResponseType>(`/image/${id}`);
   return response.data;
 }
 
 export const useGetImage = (id: string) => {
-  return useQuery({
-    queryKey: [id],
-    queryFn: () => getImage(id),
-    retry(_, error) {
-      return !error;
-    },
-  });
+  return useQuery({ queryKey: ["image", id], queryFn: () => getImage(id) });
 };

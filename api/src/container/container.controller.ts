@@ -1,12 +1,12 @@
-import { Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { ContainerService } from './container.service';
 
-@Controller('/v2/container')
+@Controller('/container')
 export class ContainerController {
   @Inject(ContainerService)
   private readonly containerService: ContainerService;
 
-  @Get('/list')
+  @Get('/')
   async listContainer() {
     return this.containerService.listContainers();
   }
@@ -24,6 +24,11 @@ export class ContainerController {
   @Get('/:id/stats')
   async getContainerStats(@Param('id') id: string) {
     return this.containerService.getContainerStats(id);
+  }
+
+  @Get('/:id/files')
+  getFiles(@Param('id') id: string, @Query('path') path: string) {
+    return this.containerService.getFiles(id, path);
   }
 
   @Post('/:id/stop')

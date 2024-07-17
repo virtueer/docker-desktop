@@ -1,7 +1,7 @@
 import { IoMdPlay } from "react-icons/io";
 import { IoStopSharp } from "react-icons/io5";
 
-import { Compose } from "~types/v2/container/list";
+import { Compose } from "~types/container/";
 import { TooltipButton } from "../TooltipButton";
 import { useStopContainer } from "@/api/container/stop";
 import { useStartContainer } from "@/api/container/start";

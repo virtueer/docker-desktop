@@ -1,8 +1,8 @@
-import ContainerId from "@/components/container/container-id";
 import { getColorByState, getContainerName } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
-import { ContainerInfo } from "~types/v2/container/list";
+import { ContainerInfo } from "~types/container/";
+import CopyableId from "../copyable-id";
 
 export function ContainerIcon({
   container,
@@ -28,7 +28,7 @@ export function ContainerIcon({
           <span className="underline underline-offset-2">
             {getContainerName(container.Names)}
           </span>
-          <ContainerId container={container} />
+          <CopyableId id={container.Id} />
         </div>
       </div>
     </Link>
