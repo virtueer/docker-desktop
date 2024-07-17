@@ -23,6 +23,16 @@ import { StateService } from 'src/state/state.service';
 import { PassThrough } from 'stream';
 import { ExecParams } from '~types/exec';
 
+function debounce(func, timeout = 300) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
 function parseByLines(data: string) {
   const datas = [];
   const lines = data.trim().split(/\r?\n/);
@@ -54,19 +64,15 @@ export class SocketGateway
   @WebSocketServer()
   server: Server;
 
-  onModuleInit() {
-    // this.emitter.on(EMIT_EVENTS.COMPOSE_LOGS, ({ compose, container, log }) => {
-    //   console.log(compose, container.Id, log.length);
-    // });
-  }
+  onModuleInit() {}
 
   async handleConnection(socket: Socket) {
-    const emitContainers = () => {
+    const emitContainers = debounce(() => {
       socket.emit(
         SOCKET_EVENTS.CONTAINERS_UPDATED,
         this.stateService.getGroupedContainers(),
       );
-    };
+    }, 300);
 
     socket.on('disconnect', () => {
       this.emitter.off(EMIT_EVENTS.CONTAINERS_UPDATED, emitContainers);

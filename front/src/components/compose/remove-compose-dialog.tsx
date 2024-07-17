@@ -1,3 +1,4 @@
+import { useDeleteContainer } from "@/api/v2/container/delete";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,14 @@ type Props = {
 };
 
 export default function RemoveComposeDialog({ compose }: Props) {
+  const { mutateAsync: deleteContainer } = useDeleteContainer();
+
+  function handleRemove() {
+    for (const container of compose.containers) {
+      deleteContainer(container.Id);
+    }
+  }
+
   return (
     <AlertDialog>
       <TooltipProvider delayDuration={500}>
@@ -42,7 +51,7 @@ export default function RemoveComposeDialog({ compose }: Props) {
             </TooltipContent>
           </Tooltip>
         </AlertDialogTrigger>
-        <AlertDialogContent className="dark text-white w-fit">
+        <AlertDialogContent className="dark text-white w-fit bg-night-500 p-4">
           <AlertDialogHeader>
             <AlertDialogTitle>Remove application</AlertDialogTitle>
             <AlertDialogDescription>
@@ -53,10 +62,13 @@ export default function RemoveComposeDialog({ compose }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-blue-500 border-2 rounded-sm">
+            <AlertDialogCancel className="border-blue-500 border-2 rounded-sm bg-transparent">
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-500 text-white">
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-500 text-white"
+              onClick={handleRemove}
+            >
               Remove
             </AlertDialogAction>
           </AlertDialogFooter>

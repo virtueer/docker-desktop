@@ -1,20 +1,16 @@
 import { useGetFiles } from "@/api/get-files";
 import InfiniteLoading from "@/components/infinite-loading";
-import { useStore } from "@/store";
+import { getContainerById } from "@/store";
 import { columns } from "@/table/file/columns";
 import FileTable from "@/table/file/data-table";
+import { updateNestedDataByPath } from "@/util";
 import { useEffect, useMemo, useState } from "react";
 import { FaFolder } from "react-icons/fa";
 import { ExtendedFile, File } from "~types/file";
-import { ContainerInfo } from "~types/v2/container/list";
 import NotRunning from "./_components/not-running";
-import { updateNestedDataByPath } from "@/util";
 
 export default function FilesTab({ id }: { id: string }) {
-  const container = useStore(
-    (x) =>
-      x.containers.find((x) => (x as ContainerInfo).Id === id) as ContainerInfo
-  );
+  const container = getContainerById(id)!;
 
   if (container.State !== "running") {
     return (

@@ -4,12 +4,16 @@ import { Compose } from "~types/v2/container/list";
 import Container from "./_container";
 import ComposeLogsTerminal from "./_terminal";
 
+import { useStartContainer } from "@/api/v2/container/start";
+import { useStopContainer } from "@/api/v2/container/stop";
+import { useUnpauseContainer } from "@/api/v2/container/unpause";
+import RemoveComposeDialog from "@/components/compose/remove-compose-dialog";
+import { TooltipButton } from "@/components/TooltipButton";
 import { Button } from "@/components/ui/button";
 import { getComposeColor } from "@/table/container/helper";
 import { Link } from "@tanstack/react-router";
 import { FaChevronLeft, FaPlay, FaStop } from "react-icons/fa6";
 import { ImStack } from "react-icons/im";
-import RemoveComposeDialog from "@/components/compose/remove-compose-dialog";
 
 export const Route = createFileRoute("/compose/$name")({
   component: Page,
@@ -22,9 +26,40 @@ function Page() {
     x.containers.find((x) => (x as Compose).name === name)
   ) as Compose;
 
+  const { mutateAsync: unpause } = useUnpauseContainer();
+  const { mutateAsync: start } = useStartContainer();
+  const { mutateAsync: stop } = useStopContainer();
+
   if (!compose) return "no compose";
 
+  const allRunning = compose.containers.every(
+    (x) => x.State === "running" && !x.loading
+  );
+
+  const allExited = compose.containers.every(
+    (x) => x.State === "exited" && !x.loading
+  );
+
   const color = getComposeColor(compose);
+
+  function handlePlay() {
+    for (const container of compose.containers) {
+      if (container.State === "running") continue;
+
+      if (container.State === "paused") {
+        unpause(container.Id);
+      } else {
+        start(container.Id);
+      }
+    }
+  }
+
+  function handleStop() {
+    for (const container of compose.containers) {
+      if (container.State === "exited") continue;
+      stop(container.Id);
+    }
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -49,29 +84,36 @@ function Page() {
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            className="bg-transparent border-2 border-blue-500 hover:text-blue-500"
+            className="bg-transparent border-2 border-blue-500 hover:text-blue-500 cursor-not-allowed"
           >
             View Configurations
           </Button>
 
           <div className="flex">
-            <Button className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-l-md">
+            <TooltipButton
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 hover:text-white rounded-none rounded-l-md"
+              tooltipText="Start"
+              disabled={allRunning}
+              onClick={handlePlay}
+            >
               <FaPlay />
-            </Button>
-            <Button
-              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-r-md border-l-2"
-              disabled={!compose.containers.find((x) => x.State === "running")}
+            </TooltipButton>
+            <TooltipButton
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 hover:text-white rounded-none rounded-r-md border-l-2"
+              tooltipText="Stop"
+              disabled={allExited}
+              onClick={handleStop}
             >
               <FaStop size="1.1rem" />
-            </Button>
+            </TooltipButton>
           </div>
 
           <RemoveComposeDialog compose={compose} />
         </div>
       </div>
 
-      <div className="flex gap-3 w-full h-full">
-        <div className="flex flex-col w-[400px] overflow-hidden overflow-y-auto scrollbar scrollbar-thin">
+      <div className="flex gap-3 w-full h-full overflow-hidden">
+        <div className="flex flex-col min-w-[335px] w-[335px] overflow-hidden overflow-y-auto scrollbar scrollbar-thin">
           {compose.containers.map((container) => (
             <Container container={container} key={container.Id} />
           ))}

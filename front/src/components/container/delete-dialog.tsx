@@ -12,16 +12,30 @@ import {
 import { FaTrash } from "react-icons/fa";
 import { ContainerInfo } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";
+import { cn } from "@/lib/utils";
+import { getContainerName } from "@/table/container/helper";
+import { useDeleteContainer } from "@/api/v2/container/delete";
 
 type Props = {
   container: ContainerInfo;
   children?: JSX.Element;
+  className?: string;
 };
 
-export default function ContainerDeleteDialog({ container, children }: Props) {
+export default function ContainerDeleteDialog({
+  container,
+  children,
+  className,
+}: Props) {
   const alertDialogTitle = "Delete container?";
 
-  const alertDialogDescription = `The '${container!.Names}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
+  const alertDialogDescription = `The '${getContainerName(container!.Names)}' container is selected for deletion. Any anonymous volumes associated with this container are also deleted.`;
+
+  const { mutateAsync: deleteContainer } = useDeleteContainer();
+
+  function handleDelete() {
+    deleteContainer(container.Id);
+  }
 
   return (
     <AlertDialog>
@@ -32,13 +46,13 @@ export default function ContainerDeleteDialog({ container, children }: Props) {
           <TooltipButton
             tooltipText="Delete"
             variant="ghost"
-            className="hover:text-red-500"
+            className={cn("hover:text-red-500", className)}
           >
             <FaTrash />
           </TooltipButton>
         )}
       </AlertDialogTrigger>
-      <AlertDialogContent className="dark text-white">
+      <AlertDialogContent className="dark text-white p-4 bg-night-500">
         <AlertDialogHeader>
           <AlertDialogTitle>{alertDialogTitle}</AlertDialogTitle>
           <AlertDialogDescription>
@@ -46,8 +60,13 @@ export default function ContainerDeleteDialog({ container, children }: Props) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-red-600 hover:bg-red-500 text-white">
+          <AlertDialogCancel className="border-blue-500 border-2 rounded-sm bg-transparent">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-red-600 hover:bg-red-500 text-white"
+            onClick={handleDelete}
+          >
             Delete forever
           </AlertDialogAction>
         </AlertDialogFooter>

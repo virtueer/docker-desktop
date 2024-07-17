@@ -1,10 +1,3 @@
-import { QueryClient } from "@tanstack/react-query";
-import {
-  DockerPs,
-  GetDockerAllPsResponse,
-  GetDockerAllPsResponseSuccess,
-} from "~types/ps";
-
 export function toPascalCase(text: string) {
   return `${text}`
     .toLowerCase()
@@ -83,72 +76,4 @@ export const updateNestedDataByPath = (
   }
 
   return oldData;
-};
-
-export const updateContainerById = (
-  queryClient: QueryClient,
-  id: string,
-  update: Partial<DockerPs>
-) => {
-  queryClient.setQueryData(
-    ["containers"],
-    (oldData: GetDockerAllPsResponseSuccess) => {
-      const index = oldData.data.findIndex((x) => x.ID === id);
-
-      const container = oldData.data[index];
-
-      const newData = updateNestedDataByPath(oldData, ["data", index + ""], {
-        ...container,
-        ...update,
-      });
-
-      return newData;
-    }
-  );
-};
-
-export const getContainerById = (queryClient: QueryClient, id: string) => {
-  const data = queryClient.getQueryData([
-    "containers",
-  ]) as GetDockerAllPsResponse;
-
-  if (!data.status) {
-    return undefined;
-  }
-
-  return data.data.find((x) => x.ID === id);
-};
-
-export const deleteContainerById = (queryClient: QueryClient, id: string) => {
-  queryClient.setQueryData(
-    ["containers"],
-    (oldData: GetDockerAllPsResponseSuccess) => {
-      const index = oldData.data.findIndex((x) => x.ID === id);
-
-      const newContainers = [
-        ...oldData.data.slice(0, index),
-        ...oldData.data.slice(index + 1),
-      ];
-
-      const newData = updateNestedDataByPath(oldData, ["data"], newContainers);
-
-      return newData;
-    }
-  );
-};
-
-export const createContainer = (
-  queryClient: QueryClient,
-  container: Partial<DockerPs>
-) => {
-  queryClient.setQueryData(
-    ["containers"],
-    (oldData: GetDockerAllPsResponseSuccess) => {
-      const newContainers = [...oldData.data, container];
-
-      const newData = updateNestedDataByPath(oldData, ["data"], newContainers);
-
-      return newData;
-    }
-  );
 };

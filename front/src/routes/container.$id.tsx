@@ -1,9 +1,9 @@
+import ContainerId from "@/components/container/container-id";
 import RemoveContainerDialog from "@/components/container/remove-container-dialog";
 import { Button } from "@/components/ui/button";
-import ContainerId from "@/components/container/container-id";
 import { TabsEnum } from "@/constants";
 import { cn } from "@/lib/utils";
-import { useStore } from "@/store";
+import { getContainerById } from "@/store";
 import {
   getColorByState,
   getContainerName,
@@ -15,7 +15,6 @@ import { FaPlay, FaStop } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa6";
 import { GoContainer } from "react-icons/go";
 import { MdRestartAlt, MdTerminal } from "react-icons/md";
-import { ContainerInfo } from "~types/v2/container/list";
 import ExecTab from "./container/$id/_exec";
 import FilesTab from "./container/$id/_files";
 import InspectTab from "./container/$id/_inspect";
@@ -64,10 +63,13 @@ function Page() {
     }
   }, [searchTab]);
 
-  const container = useStore(
-    (x) =>
-      x.containers.find((x) => (x as ContainerInfo).Id === id) as ContainerInfo
-  );
+  const container = getContainerById(id);
+
+  if (!container) {
+    return "NOT FOUND";
+  }
+
+  console.log("container", container);
 
   const color = getColorByState(container.State);
 

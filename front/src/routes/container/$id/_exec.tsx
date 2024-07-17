@@ -1,16 +1,12 @@
 import { socket } from "@/socket";
-import { useStore } from "@/store";
+import { getContainerById } from "@/store";
 import { Terminal } from "@xterm/xterm";
 import { useEffect, useMemo, useRef } from "react";
-import { ContainerInfo } from "~types/v2/container/list";
-import NotRunning from "./_components/not-running";
 import { MdTerminal } from "react-icons/md";
+import NotRunning from "./_components/not-running";
 
 export default function ExecTab({ id }: { id: string }) {
-  const container = useStore(
-    (x) =>
-      x.containers.find((x) => (x as ContainerInfo).Id === id) as ContainerInfo
-  );
+  const container = getContainerById(id)!;
 
   if (container.State !== "running") {
     return (

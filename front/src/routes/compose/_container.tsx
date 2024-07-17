@@ -17,7 +17,7 @@ export default function Container({ container }: { container: ContainerInfo }) {
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <GoContainer size="1.5rem" className="min-w-[1.5rem]" color={color} />
         <div className="flex flex-col mx-5 overflow-hidden">
           <span className="whitespace-nowrap font-bold text-ellipsis overflow-hidden">
@@ -38,7 +38,11 @@ export default function Container({ container }: { container: ContainerInfo }) {
         </div>
         <ContainerPlayStop container={container} />
         <ContainerThreeDots container={container} />
-        <ContainerDeleteDialog container={container} />
+        <Separator
+          orientation="vertical"
+          className="mx-3 bg-slate-600 w-[0.5px] h-[50%]"
+        />
+        <ContainerDeleteDialog container={container} className="mr-4" />
       </div>
       <Separator className="my-2 bg-night-300" />
     </>
