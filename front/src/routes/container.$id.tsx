@@ -8,7 +8,7 @@ import {
   getColorByState,
   getContainerName,
   getImageId,
-} from "@/table/container/helper";
+} from "@/components/table/helper";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";

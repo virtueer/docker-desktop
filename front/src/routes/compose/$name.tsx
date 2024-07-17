@@ -10,7 +10,7 @@ import { useUnpauseContainer } from "@/api/v2/container/unpause";
 import RemoveComposeDialog from "@/components/compose/remove-compose-dialog";
 import { TooltipButton } from "@/components/TooltipButton";
 import { Button } from "@/components/ui/button";
-import { getComposeColor } from "@/table/container/helper";
+import { getComposeColor } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { FaChevronLeft, FaPlay, FaStop } from "react-icons/fa6";
 import { ImStack } from "react-icons/im";

@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getContainerName } from "@/table/container/helper";
+import { getContainerName } from "@/components/table/helper";
 
 type Props = {
   container: ContainerInfo;

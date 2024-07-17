@@ -1,13 +1,123 @@
 import { useGetFiles } from "@/api/get-files";
+import { DataTable } from "@/components/data-table";
 import InfiniteLoading from "@/components/infinite-loading";
 import { getContainerById } from "@/store";
-import { columns } from "@/table/file/columns";
-import FileTable from "@/table/file/data-table";
 import { updateNestedDataByPath } from "@/util";
+import { getCoreRowModel, getExpandedRowModel } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { FaFolder } from "react-icons/fa";
 import { ExtendedFile, File } from "~types/file";
 import NotRunning from "./_components/not-running";
+
+import { TimeAgo } from "@/components/timeago";
+import { Button } from "@/components/ui/button";
+import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { ColumnDef } from "@tanstack/react-table";
+import bytes from "bytes";
+import { FaRegFile, FaRegFolder, FaSpinner } from "react-icons/fa";
+import { LuFileSymlink } from "react-icons/lu";
+
+type FileTableMetadata = {
+  getFiles: (path: string) => void;
+};
+
+function getIcon(file: ExtendedFile) {
+  let icon;
+
+  switch (file.permission.fileType) {
+    case "Directory":
+      icon = <FaRegFolder />;
+      break;
+
+    case "Symbolic Link":
+      icon = <LuFileSymlink />;
+      break;
+
+    default:
+      icon = <FaRegFile />;
+      break;
+  }
+
+  return icon;
+}
+
+export const columns: ColumnDef<ExtendedFile>[] = [
+  {
+    id: "Name",
+    header: "Name",
+    meta: {
+      headerClass: "w-full",
+      cellClass: "p-2",
+    },
+    cell({ row, table }) {
+      const visibility =
+        row.original.permission.fileType === "Directory" ? "visible" : "hidden";
+
+      const isExpanded = row?.getIsExpanded();
+      const isLoading = row.original.isLoading;
+
+      const { getFiles } = table.options.meta as FileTableMetadata;
+
+      function handleExpand() {
+        if (!row.original.childs) {
+          getFiles(row.original.path);
+        }
+        row.toggleExpanded();
+      }
+
+      const Icon = getIcon(row.original);
+
+      return (
+        <div
+          className="flex items-center"
+          style={{ paddingLeft: `${row.depth / 2}rem` }}
+        >
+          <Button
+            variant="ghost"
+            className="p-0 mr-1 w-fit h-fit rounded-full hover:bg-transparent"
+            onClick={handleExpand}
+            style={{ cursor: "pointer", textAlign: "center", visibility }}
+          >
+            {isLoading && <FaSpinner className="animate-spin" />}
+            {!isLoading && isExpanded && <ChevronDownIcon />}
+            {!isLoading && !isExpanded && <ChevronRightIcon />}
+          </Button>
+
+          {Icon}
+          <span className="ml-2"> {row.original.name}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "size",
+    header: "Size",
+    cell({ row }) {
+      const value = row.original.size;
+      return bytes(value, { unitSeparator: " " });
+    },
+    meta: {
+      cellClass: "whitespace-nowrap p-2",
+    },
+  },
+  {
+    accessorKey: "modify",
+    header: "Modify",
+    cell({ row }) {
+      return <TimeAgo date={row.original.modify} />;
+    },
+    meta: {
+      cellClass: "whitespace-nowrap p-2",
+    },
+  },
+  {
+    accessorFn: (data) => data.permission.symbolic,
+    header: "Mode",
+    meta: {
+      cellClass: "whitespace-nowrap p-2",
+    },
+  },
+];
 
 export default function FilesTab({ id }: { id: string }) {
   const container = getContainerById(id)!;
@@ -98,10 +208,15 @@ export default function FilesTab({ id }: { id: string }) {
     <>
       {!data && isPending && <InfiniteLoading width="50vw" className="my-5" />}
       {grouped && (
-        <FileTable
+        <DataTable
           columns={columns}
           data={grouped}
-          getFiles={getFilesRecursive}
+          getSubRows={(data) => data.childs}
+          getCoreRowModel={getCoreRowModel()}
+          getExpandedRowModel={getExpandedRowModel()}
+          meta={{
+            getFiles: getFilesRecursive,
+          }}
         />
       )}
     </>

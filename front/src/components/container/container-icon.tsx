@@ -1,5 +1,5 @@
 import ContainerId from "@/components/container/container-id";
-import { getColorByState, getContainerName } from "@/table/container/helper";
+import { getColorByState, getContainerName } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
 import { ContainerInfo } from "~types/v2/container/list";

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { getContainersByIds } from "./helper";
-import { getContainerName } from "@/table/container/helper";
+import { getContainerName } from "@/components/table/helper";
 import { useDeleteContainer } from "@/api/v2/container/delete";
 
 export default function SelectedDelete({

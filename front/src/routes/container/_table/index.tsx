@@ -3,9 +3,9 @@ import { ContainerIcon } from "@/components/container/container-icon";
 import { DataTable } from "@/components/data-table";
 import InfiniteLoading from "@/components/infinite-loading";
 import { TableCheckbox } from "@/components/table/checkbox";
-import { ExpandButton } from "@/table/container/components/expand-button";
-import { SortableHeader } from "@/table/container/components/sortable-header";
-import { getComposeStatus, getImageId } from "@/table/container/helper";
+import { ExpandButton } from "@/components/table/expand-button";
+import { SortableHeader } from "@/components/table/sortable-header";
+import { getComposeStatus, getImageId } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import {
   ColumnDef,

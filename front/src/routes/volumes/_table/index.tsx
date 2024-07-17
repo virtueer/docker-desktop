@@ -1,10 +1,15 @@
+import { DataTable } from "@/components/data-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getSortedRowModel,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table";
 import { Volume } from "~types/volume";
 
-type TData = Volume;
-
-export const columns: ColumnDef<TData>[] = [
+const columns: ColumnDef<Volume>[] = [
   {
     id: "select",
     header: ({ table }) => {
@@ -45,3 +50,28 @@ export const columns: ColumnDef<TData>[] = [
     accessorKey: "Status",
   },
 ];
+
+type Props = {
+  data: Volume[];
+  rowSelection: RowSelectionState;
+  setRowSelection: OnChangeFn<RowSelectionState>;
+};
+
+export default function VolumeTable({
+  data,
+  rowSelection,
+  setRowSelection,
+}: Props) {
+  return (
+    <DataTable
+      columns={columns}
+      data={data}
+      getCoreRowModel={getCoreRowModel()}
+      getSortedRowModel={getSortedRowModel()}
+      onRowSelectionChange={setRowSelection}
+      state={{
+        rowSelection,
+      }}
+    />
+  );
+}

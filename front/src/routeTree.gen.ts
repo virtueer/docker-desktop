@@ -12,7 +12,6 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as VolumesIndexImport } from './routes/volumes/index'
-import { Route as StateIndexImport } from './routes/state/index'
 import { Route as ImagesIndexImport } from './routes/images/index'
 import { Route as ContainerIndexImport } from './routes/container/index'
 import { Route as ContainerIdImport } from './routes/container.$id'
@@ -23,11 +22,6 @@ import { Route as ImagesIdIndexImport } from './routes/images/$id/index'
 
 const VolumesIndexRoute = VolumesIndexImport.update({
   path: '/volumes/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const StateIndexRoute = StateIndexImport.update({
-  path: '/state/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,13 +82,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImagesIndexImport
       parentRoute: typeof rootRoute
     }
-    '/state/': {
-      id: '/state/'
-      path: '/state'
-      fullPath: '/state'
-      preLoaderRoute: typeof StateIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/volumes/': {
       id: '/volumes/'
       path: '/volumes'
@@ -119,7 +106,6 @@ export const routeTree = rootRoute.addChildren({
   ContainerIdRoute,
   ContainerIndexRoute,
   ImagesIndexRoute,
-  StateIndexRoute,
   VolumesIndexRoute,
   ImagesIdIndexRoute,
 })
@@ -135,7 +121,6 @@ export const routeTree = rootRoute.addChildren({
         "/container/$id",
         "/container/",
         "/images/",
-        "/state/",
         "/volumes/",
         "/images/$id/"
       ]
@@ -151,9 +136,6 @@ export const routeTree = rootRoute.addChildren({
     },
     "/images/": {
       "filePath": "images/index.tsx"
-    },
-    "/state/": {
-      "filePath": "state/index.tsx"
     },
     "/volumes/": {
       "filePath": "volumes/index.tsx"

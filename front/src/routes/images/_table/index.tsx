@@ -1,13 +1,19 @@
+import { DataTable } from "@/components/data-table";
+import {
+  getCoreRowModel,
+  getSortedRowModel,
+  OnChangeFn,
+  RowSelectionState,
+} from "@tanstack/react-table";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdContentCopy } from "react-icons/md";
 import { Image } from "~types/image";
-import { Link } from "@tanstack/react-router";
 
-type TData = Image;
-
-export const columns: ColumnDef<TData>[] = [
+const columns: ColumnDef<Image>[] = [
   {
     id: "select",
     header: ({ table }) => {
@@ -87,3 +93,28 @@ export const columns: ColumnDef<TData>[] = [
     },
   },
 ];
+
+type Props = {
+  data: Image[];
+  rowSelection: RowSelectionState;
+  setRowSelection: OnChangeFn<RowSelectionState>;
+};
+
+export default function ImageTable({
+  data,
+  rowSelection,
+  setRowSelection,
+}: Props) {
+  return (
+    <DataTable
+      columns={columns}
+      data={data}
+      getCoreRowModel={getCoreRowModel()}
+      getSortedRowModel={getSortedRowModel()}
+      onRowSelectionChange={setRowSelection}
+      state={{
+        rowSelection,
+      }}
+    />
+  );
+}

@@ -6,7 +6,7 @@ import {
   getColorByState,
   getContainerName,
   getImageId,
-} from "@/table/container/helper";
+} from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
 import { ContainerInfo } from "~types/v2/container/list";

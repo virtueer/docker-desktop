@@ -13,7 +13,7 @@ import { FaTrash } from "react-icons/fa";
 import { ContainerInfo } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";
 import { cn } from "@/lib/utils";
-import { getContainerName } from "@/table/container/helper";
+import { getContainerName } from "@/components/table/helper";
 import { useDeleteContainer } from "@/api/v2/container/delete";
 
 type Props = {

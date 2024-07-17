@@ -1,7 +1,7 @@
 import { useGetvolumes } from "@/api/get-volume-all";
-import { columns } from "@/table/volume/columns";
-import VolumeTable from "@/table/volume/data-table";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import VolumeTable from "./_table";
 
 export const Route = createFileRoute("/volumes/")({
   component: Page,
@@ -9,5 +9,13 @@ export const Route = createFileRoute("/volumes/")({
 
 function Page() {
   const { data } = useGetvolumes();
-  return <VolumeTable data={data?.data || []} columns={columns} />;
+  const [rowSelection, setRowSelection] = useState({});
+
+  return (
+    <VolumeTable
+      data={data?.data || []}
+      rowSelection={rowSelection}
+      setRowSelection={setRowSelection}
+    />
+  );
 }
