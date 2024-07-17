@@ -1,11 +1,11 @@
-import { useStartContainer } from "@/api/v2/container/start";
+import { useStartContainer } from "@/api/container/start";
 import { Button } from "@/components/ui/button";
 import { RowSelectionState } from "@tanstack/react-table";
 import { FaPause, FaPlay, FaStop } from "react-icons/fa";
 import { getContainersByIds } from "./helper";
-import { useUnpauseContainer } from "@/api/v2/container/unpause";
-import { useStopContainer } from "@/api/v2/container/stop";
-import { usePauseContainer } from "@/api/v2/container/pause";
+import { useUnpauseContainer } from "@/api/container/unpause";
+import { useStopContainer } from "@/api/container/stop";
+import { usePauseContainer } from "@/api/container/pause";
 
 export default function SelectedActions({
   rowSelection,

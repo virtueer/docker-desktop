@@ -13,7 +13,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { useState } from "react";
 import { getContainersByIds } from "./helper";
 import { getContainerName } from "@/components/table/helper";
-import { useDeleteContainer } from "@/api/v2/container/delete";
+import { useDeleteContainer } from "@/api/container/delete";
 
 export default function SelectedDelete({
   rowSelection,

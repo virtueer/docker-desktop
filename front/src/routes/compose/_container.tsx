@@ -10,7 +10,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
 import { ContainerInfo } from "~types/v2/container/list";
-import InfiniteLoading from "@/components/infinite-loading";
+import InfiniteLoading from "@/components/infinite-loading/infinite-loading";
 
 export default function Container({ container }: { container: ContainerInfo }) {
   const color = getColorByState(container.State);

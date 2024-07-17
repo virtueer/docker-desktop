@@ -1,6 +1,6 @@
 import { api } from "@/axios";
 import { useMutation } from "@tanstack/react-query";
-import { ApiRoutes } from "..";
+import { ApiRoutes } from "../routes";
 
 async function stopContainer(id: string) {
   type ResponseType = ApiRoutes["container"]["stop"];

@@ -1,4 +1,4 @@
-import { useDeleteContainer } from "@/api/v2/container/delete";
+import { useDeleteContainer } from "@/api/container/delete";
 import {
   AlertDialog,
   AlertDialogAction,

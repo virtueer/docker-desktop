@@ -1,7 +1,7 @@
 import { ComposeIcon } from "@/components/container/compose-icon";
 import { ContainerIcon } from "@/components/container/container-icon";
 import { DataTable } from "@/components/data-table";
-import InfiniteLoading from "@/components/infinite-loading";
+import InfiniteLoading from "@/components/infinite-loading/infinite-loading";
 import { TableCheckbox } from "@/components/table/checkbox";
 import { ExpandButton } from "@/components/table/expand-button";
 import { SortableHeader } from "@/components/table/sortable-header";

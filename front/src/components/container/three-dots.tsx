@@ -15,8 +15,8 @@ import { PiFolderDuotone } from "react-icons/pi";
 import { ContainerInfo } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";
 import { TabsEnum } from "@/constants";
-import { usePauseContainer } from "@/api/v2/container/pause";
-import { useRestartContainer } from "@/api/v2/container/restart";
+import { usePauseContainer } from "@/api/container/pause";
+import { useRestartContainer } from "@/api/container/restart";
 
 const Item = ({
   Icon,

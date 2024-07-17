@@ -14,7 +14,7 @@ import { ContainerInfo } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";
 import { cn } from "@/lib/utils";
 import { getContainerName } from "@/components/table/helper";
-import { useDeleteContainer } from "@/api/v2/container/delete";
+import { useDeleteContainer } from "@/api/container/delete";
 
 type Props = {
   container: ContainerInfo;

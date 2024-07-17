@@ -1,5 +1,5 @@
 import { useGetContainerInspect } from "@/api/inspect-container";
-import InfiniteLoading from "@/components/infinite-loading";
+import InfiniteLoading from "@/components/infinite-loading/infinite-loading";
 import { JsonEditor } from "json-edit-react";
 
 export default function InspectTab({ id }: { id: string }) {

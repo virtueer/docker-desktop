@@ -1,6 +1,6 @@
-import { useStartContainer } from "@/api/v2/container/start";
-import { useStopContainer } from "@/api/v2/container/stop";
-import { useUnpauseContainer } from "@/api/v2/container/unpause";
+import { useStartContainer } from "@/api/container/start";
+import { useStopContainer } from "@/api/container/stop";
+import { useUnpauseContainer } from "@/api/container/unpause";
 import { IoMdPlay } from "react-icons/io";
 import { IoStopSharp } from "react-icons/io5";
 import { ContainerInfo } from "~types/v2/container/list";

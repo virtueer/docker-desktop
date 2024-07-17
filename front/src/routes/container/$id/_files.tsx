@@ -1,6 +1,6 @@
 import { useGetFiles } from "@/api/get-files";
 import { DataTable } from "@/components/data-table";
-import InfiniteLoading from "@/components/infinite-loading";
+import InfiniteLoading from "@/components/infinite-loading/infinite-loading";
 import { getContainerById } from "@/store";
 import { updateNestedDataByPath } from "@/util";
 import { getCoreRowModel, getExpandedRowModel } from "@tanstack/react-table";

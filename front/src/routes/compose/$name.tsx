@@ -4,9 +4,9 @@ import { Compose } from "~types/v2/container/list";
 import Container from "./_container";
 import ComposeLogsTerminal from "./_terminal";
 
-import { useStartContainer } from "@/api/v2/container/start";
-import { useStopContainer } from "@/api/v2/container/stop";
-import { useUnpauseContainer } from "@/api/v2/container/unpause";
+import { useStartContainer } from "@/api/container/start";
+import { useStopContainer } from "@/api/container/stop";
+import { useUnpauseContainer } from "@/api/container/unpause";
 import RemoveComposeDialog from "@/components/compose/remove-compose-dialog";
 import { TooltipButton } from "@/components/TooltipButton";
 import { Button } from "@/components/ui/button";

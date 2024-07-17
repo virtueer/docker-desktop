@@ -3,9 +3,9 @@ import { IoStopSharp } from "react-icons/io5";
 
 import { Compose } from "~types/v2/container/list";
 import { TooltipButton } from "../TooltipButton";
-import { useStopContainer } from "@/api/v2/container/stop";
-import { useStartContainer } from "@/api/v2/container/start";
-import { useUnpauseContainer } from "@/api/v2/container/unpause";
+import { useStopContainer } from "@/api/container/stop";
+import { useStartContainer } from "@/api/container/start";
+import { useUnpauseContainer } from "@/api/container/unpause";
 
 type Props = {
   compose: Compose;

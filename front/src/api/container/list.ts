@@ -1,6 +1,6 @@
 import { api } from "@/axios";
 import { useQuery } from "@tanstack/react-query";
-import { ApiRoutes } from "..";
+import { ApiRoutes } from "../routes";
 
 async function containerList() {
   type ResponseType = ApiRoutes["container"]["list"];
