@@ -2,7 +2,7 @@ import "../globals.css";
 import "@xterm/xterm/css/xterm.css";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
 // import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Sidebar from "@/components/sidebar/sidebar";
@@ -10,6 +10,9 @@ import Sidebar from "@/components/sidebar/sidebar";
 const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
+  beforeLoad(opts) {
+    if (opts.location.pathname === "/") throw redirect({ to: "/container" });
+  },
   component: RootPage,
 });
 

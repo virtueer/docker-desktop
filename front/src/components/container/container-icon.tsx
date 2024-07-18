@@ -1,7 +1,7 @@
 import { getColorByState, getContainerName } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
-import { ContainerInfo } from "~types/container/";
+import { ContainerInfo } from "~types/container";
 import CopyableId from "../copyable-id";
 
 export function ContainerIcon({
@@ -16,7 +16,7 @@ export function ContainerIcon({
 
   return (
     <Link
-      to={"/container/$id"}
+      to="/container/$id"
       params={{ id: container.Id }}
       className="drag-none text-blue-500 font-bold"
     >

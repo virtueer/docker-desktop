@@ -14,16 +14,14 @@ function Page() {
 
   if (isLoading) return "Loading...";
 
-  if (!data?.status) return data?.error;
+  if (!data) return "Error";
 
   return (
     <div className="flex flex-col">
-      <span className="text-xl font-bold mb-3">
-        Layers ({data.data.length})
-      </span>
+      <span className="text-xl font-bold mb-3">Layers ({data.length})</span>
       <div className="flex gap-2 bg-night-500">
         <div className="flex-col w-full">
-          {data.data.map((layer, index) => (
+          {data.map((layer, index) => (
             <div
               key={index}
               className="border border-b-0 border-x-0 border-slate-500 p-2 hover:bg-slate-700 cursor-pointer focus:bg-night-400"

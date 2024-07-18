@@ -18,7 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { FaTrash } from "react-icons/fa";
-import { Compose } from "~types/container/";
+import { Compose } from "~types/container";
 
 type Props = {
   compose: Compose;

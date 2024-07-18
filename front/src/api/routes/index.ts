@@ -1,6 +1,6 @@
 import { FailResponse, StatusResponse } from "~types/base";
 import { ContainerInfo, ContainerInspect } from "~types/container";
-import { Image } from "~types/image";
+import { Image, ImageInspect } from "~types/image";
 import { Volume } from "~types/volume";
 
 export type ApiRoutes = {
@@ -16,7 +16,7 @@ export type ApiRoutes = {
   };
   image: {
     list: Image[];
-    info: Image;
+    info: ImageInspect[];
   };
   volume: {
     list: { Volumes: Volume[]; Warnings: string[] };

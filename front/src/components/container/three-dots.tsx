@@ -12,7 +12,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { IoEye, IoTerminal } from "react-icons/io5";
 import { MdOutlineRestartAlt } from "react-icons/md";
 import { PiFolderDuotone } from "react-icons/pi";
-import { ContainerInfo } from "~types/container/";
+import { ContainerInfo } from "~types/container";
 import { TooltipButton } from "../TooltipButton";
 import { TabsEnum } from "@/constants";
 import { usePauseContainer } from "@/api/container/pause";

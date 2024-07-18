@@ -70,7 +70,7 @@ export const columns: ColumnDef<ExtendedFile>[] = [
       return (
         <div
           className="flex items-center"
-          style={{ paddingLeft: `${row.depth / 2}rem` }}
+          style={{ paddingLeft: `${row.depth}rem` }}
         >
           <Button
             variant="ghost"
@@ -129,9 +129,11 @@ export default function FilesTab({ id }: { id: string }) {
   }
 
   const [data, setData] = useState<File[]>();
+
   const { mutateAsync, isPending } = useGetFiles(id);
 
   async function getFilesRecursive(path?: string) {
+    console.log("getFilesRecursive", path);
     const folderIndex = data?.findIndex((x) => x.path === path);
     const folder = folderIndex ? data?.[folderIndex] : undefined;
 
@@ -194,7 +196,10 @@ export default function FilesTab({ id }: { id: string }) {
           if (!parent.childs) {
             parent.childs = [];
           }
-          parent.childs.push(item);
+
+          if (!parent.childs.find((x) => x.path === item.path)) {
+            parent.childs.push(item);
+          }
         }
       }
 
@@ -203,6 +208,8 @@ export default function FilesTab({ id }: { id: string }) {
 
     return tree;
   }, [data]);
+
+  console.log(grouped);
 
   return (
     <>

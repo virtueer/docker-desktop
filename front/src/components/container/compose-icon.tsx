@@ -1,7 +1,7 @@
 import { getComposeColor } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { ImStack } from "react-icons/im";
-import { Compose } from "~types/container/";
+import { Compose } from "~types/container";
 
 export function ComposeIcon({
   compose,

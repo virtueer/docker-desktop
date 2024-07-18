@@ -17,7 +17,7 @@ import {
   OnChangeFn,
   RowSelectionState,
 } from "@tanstack/react-table";
-import { Compose, ContainerInfo, GrouppedContainer } from "~types/container/";
+import { Compose, ContainerInfo, GrouppedContainer } from "~types/container";
 import { Actions } from "./actions";
 
 const multiColumnFilterFn: FilterFn<GrouppedContainer> = (

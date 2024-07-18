@@ -9,7 +9,7 @@ import {
 } from "@/components/table/helper";
 import { Link } from "@tanstack/react-router";
 import { GoContainer } from "react-icons/go";
-import { ContainerInfo } from "~types/container/";
+import { ContainerInfo } from "~types/container";
 import InfiniteLoading from "@/components/infinite-loading/infinite-loading";
 
 export default function Container({ container }: { container: ContainerInfo }) {

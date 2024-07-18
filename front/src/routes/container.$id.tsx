@@ -69,8 +69,6 @@ function Page() {
     return "NOT FOUND";
   }
 
-  console.log("container", container);
-
   const color = getColorByState(container.State);
 
   return (
@@ -92,7 +90,7 @@ function Page() {
             </span>
             <Link
               to="/images/$id"
-              params={{ id: getImageId(container.Id) }}
+              params={{ id: getImageId(container.ImageID) }}
               className="text-blue-500 underline underline-offset-2 font-bold drag-none text-sm"
             >
               {container.Image}

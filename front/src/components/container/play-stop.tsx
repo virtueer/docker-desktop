@@ -3,7 +3,7 @@ import { useStopContainer } from "@/api/container/stop";
 import { useUnpauseContainer } from "@/api/container/unpause";
 import { IoMdPlay } from "react-icons/io";
 import { IoStopSharp } from "react-icons/io5";
-import { ContainerInfo } from "~types/container/";
+import { ContainerInfo } from "~types/container";
 import { TooltipButton } from "../TooltipButton";
 
 type Props = {

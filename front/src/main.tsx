@@ -17,7 +17,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     // <StrictMode>
-    <RouterProvider router={router} basepath="/container" />
+    <RouterProvider router={router} basepath="/" />
     // </StrictMode>
   );
 }

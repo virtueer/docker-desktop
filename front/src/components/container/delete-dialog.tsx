@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { FaTrash } from "react-icons/fa";
-import { ContainerInfo } from "~types/container/";
+import { ContainerInfo } from "~types/container";
 import { TooltipButton } from "../TooltipButton";
 import { cn } from "@/lib/utils";
 import { getContainerName } from "@/components/table/helper";
