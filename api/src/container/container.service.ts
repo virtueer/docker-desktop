@@ -157,6 +157,7 @@ export class ContainerService implements OnModuleInit {
   }
 
   async onEvent(event: Events) {
+    await new Promise((r) => setTimeout(r, 1000));
     this.updateContainers({ id: [event.id] });
   }
 

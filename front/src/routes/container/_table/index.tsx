@@ -199,6 +199,7 @@ export function ContainerTable({
 }: Props) {
   return (
     <DataTable
+      filterFromLeafRows
       columns={columns}
       data={data}
       getRowId={(data) => (data as ContainerInfo).Id || (data as Compose).name}
