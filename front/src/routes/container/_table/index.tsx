@@ -14,8 +14,10 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   OnChangeFn,
   RowSelectionState,
+  SortingState,
 } from "@tanstack/react-table";
 import { Compose, ContainerInfo, GrouppedContainer } from "~types/container";
 import { Actions } from "./actions";
@@ -182,6 +184,8 @@ type Props = {
   setColumnFilters: OnChangeFn<ColumnFiltersState>;
   rowSelection: RowSelectionState;
   setRowSelection: OnChangeFn<RowSelectionState>;
+  sorting: SortingState;
+  setSorting: OnChangeFn<SortingState>;
 };
 
 export function ContainerTable({
@@ -190,6 +194,8 @@ export function ContainerTable({
   setColumnFilters,
   setRowSelection,
   rowSelection,
+  sorting,
+  setSorting,
 }: Props) {
   return (
     <DataTable
@@ -200,12 +206,15 @@ export function ContainerTable({
       getCoreRowModel={getCoreRowModel()}
       getExpandedRowModel={getExpandedRowModel()}
       getFilteredRowModel={getFilteredRowModel()}
+      getSortedRowModel={getSortedRowModel()}
+      onSortingChange={setSorting}
       onColumnFiltersChange={setColumnFilters}
       onRowSelectionChange={setRowSelection}
       state={{
         columnVisibility: { State: false },
         columnFilters,
         rowSelection,
+        sorting,
       }}
     />
   );

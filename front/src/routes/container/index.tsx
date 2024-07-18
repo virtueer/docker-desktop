@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { FaSearch } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ColumnFiltersState, RowSelectionState } from "@tanstack/react-table";
+import {
+  ColumnFiltersState,
+  RowSelectionState,
+  SortingState,
+} from "@tanstack/react-table";
 import { useState } from "react";
 import SelectedActions from "@/components/selected/actions";
 import SelectedDelete from "@/components/selected/delete";
@@ -21,6 +25,7 @@ function Page() {
   const [show, setShow] = useState<boolean>(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   function handleSwitch() {
     setColumnFilters((oldValues) => {
@@ -113,6 +118,8 @@ function Page() {
         setColumnFilters={setColumnFilters}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
+        sorting={sorting}
+        setSorting={setSorting}
       />
     </div>
   );
