@@ -19,12 +19,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getContainerName } from "@/components/table/helper";
+import { useDeleteContainer } from "@/api/container/delete";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
   container: ContainerInfo;
 };
 
 export default function RemoveContainerDialog({ container }: Props) {
+  const { mutateAsync } = useDeleteContainer();
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    await mutateAsync(container.Id);
+    navigate({ to: "/container" });
+  };
+
   return (
     <AlertDialog>
       <TooltipProvider delayDuration={500}>
@@ -43,7 +53,7 @@ export default function RemoveContainerDialog({ container }: Props) {
             </TooltipContent>
           </Tooltip>
         </AlertDialogTrigger>
-        <AlertDialogContent className="dark text-white w-fit">
+        <AlertDialogContent className="dark text-white w-fit bg-night-500">
           <AlertDialogHeader>
             <AlertDialogTitle>Remove container</AlertDialogTitle>
             <AlertDialogDescription>
@@ -54,10 +64,13 @@ export default function RemoveContainerDialog({ container }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-blue-500 border-2 rounded-sm">
+            <AlertDialogCancel className="border-blue-500 border-2 rounded-sm bg-transparent">
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-500 text-white">
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-500 text-white"
+              onClick={handleDelete}
+            >
               Remove
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -20,6 +20,10 @@ import InspectTab from "./container/$id/_inspect";
 import LogsTab from "./container/$id/_logs";
 import CopyableId from "@/components/copyable-id";
 import StatsTab from "./container/$id/_stats";
+import { useStopContainer } from "@/api/container/stop";
+import { useStartContainer } from "@/api/container/start";
+import { useUnpauseContainer } from "@/api/container/unpause";
+import { useRestartContainer } from "@/api/container/restart";
 
 function TabHead({
   text,
@@ -62,11 +66,21 @@ function Page() {
     }
   }, [searchTab]);
 
+  const { mutateAsync: stop } = useStopContainer();
+  const { mutateAsync: start } = useStartContainer();
+  const { mutateAsync: unpause } = useUnpauseContainer();
+  const { mutateAsync: restart } = useRestartContainer();
+
   const container = getContainerById(id);
 
   if (!container) {
     return "NOT FOUND";
   }
+
+  const handlePlay = () => {
+    if (container.State === "paused") unpause(container.Id);
+    else if (container.State === "exited") start(container.Id);
+  };
 
   const color = getColorByState(container.State);
 
@@ -111,16 +125,25 @@ function Page() {
           </Button>
 
           <div className="flex">
-            <Button className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-l-md">
+            <Button
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-l-md"
+              disabled={container.State === "exited" || container.loading}
+              onClick={() => stop(container.Id)}
+            >
               <FaStop />
             </Button>
             <Button
-              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none border-x-2 border-blue-300"
-              disabled={container.State === "running"}
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none border-x-2 border-blue-500"
+              disabled={container.State === "running" || container.loading}
+              onClick={handlePlay}
             >
               <FaPlay />
             </Button>
-            <Button className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-r-md">
+            <Button
+              className="w-[50px] bg-blue-600 text-white hover:bg-blue-500 rounded-none rounded-r-md"
+              disabled={container.loading}
+              onClick={() => restart(container.Id)}
+            >
               <MdRestartAlt size="1.3rem" />
             </Button>
           </div>
