@@ -34,7 +34,6 @@ export class ContainerService implements OnModuleInit {
 
   logs = new Map<string, string[]>();
   composeLogs = new Map<string, string[]>();
-  stats = new Map<string, Dockerode.ContainerStats[]>();
 
   async initialize() {
     const timeout_ms = 60_000;
@@ -82,16 +81,24 @@ export class ContainerService implements OnModuleInit {
     const stream = (await container.stats({ stream: true })) as IncomingMessage;
     this.statsStreams.set(container.id, stream);
 
-    const oldStats = this.stats.get(container.id);
+    const oldStats = this.stateService.stats.get(container.id);
     if (!oldStats) {
-      this.stats.set(container.id, []);
+      this.stateService.stats.set(container.id, []);
     }
 
-    stream.on('data', (buffer: Buffer) => {
-      const stats = this.stats.get(container.id);
+    const skip = 10;
+    let skipped = -1;
 
-      // last 30 day
-      if (stats.length === 2_592_000) {
+    stream.on('data', (buffer: Buffer) => {
+      const stats = this.stateService.stats.get(container.id);
+      if (skipped !== -1 && ++skipped !== skip) {
+        return;
+      }
+
+      skipped = 0;
+
+      // only show last 100
+      if (stats.length === 100) {
         stats.shift();
       }
 
@@ -176,7 +183,7 @@ export class ContainerService implements OnModuleInit {
   }
 
   async getContainerStats(id: string) {
-    const stats = this.stats.get(id);
+    const stats = this.stateService.stats.get(id);
     return { length: stats.length, stats };
   }
 

@@ -9,4 +9,5 @@ export enum TabsEnum {
   INSPECT = "inspect",
   EXEC = "exec",
   FILES = "files",
+  STATS = "stats",
 }

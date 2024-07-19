@@ -19,6 +19,7 @@ import FilesTab from "./container/$id/_files";
 import InspectTab from "./container/$id/_inspect";
 import LogsTab from "./container/$id/_logs";
 import CopyableId from "@/components/copyable-id";
+import StatsTab from "./container/$id/_stats";
 
 function TabHead({
   text,
@@ -52,13 +53,11 @@ function Page() {
   const [tab, setTab] = useState<string>(TabsEnum.LOGS);
 
   useEffect(() => {
-    console.log("searchtab", searchTab);
     if (
       Object.keys(TabsEnum)
         .map((x) => x.toLowerCase())
         .includes(searchTab)
     ) {
-      console.log("searchtab", searchTab, "111");
       setTab(searchTab);
     }
   }, [searchTab]);
@@ -152,12 +151,18 @@ function Page() {
             active={tab === TabsEnum.FILES}
             onClick={() => setTab(TabsEnum.FILES)}
           />
+          <TabHead
+            text={TabsEnum.STATS}
+            active={tab === TabsEnum.STATS}
+            onClick={() => setTab(TabsEnum.STATS)}
+          />
         </div>
-        <div className="content border h-[calc(100vh-80px)] max-h-[calc(100vh-80px)]">
+        <div className="content h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] overflow-auto scrollbar">
           {tab === TabsEnum.LOGS && <LogsTab id={id} />}
           {tab === TabsEnum.INSPECT && <InspectTab id={id} />}
           {tab === TabsEnum.EXEC && <ExecTab id={id} />}
           {tab === TabsEnum.FILES && <FilesTab id={id} />}
+          {tab === TabsEnum.STATS && <StatsTab id={id} />}
         </div>
       </div>
     </div>

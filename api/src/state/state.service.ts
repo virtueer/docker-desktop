@@ -4,6 +4,7 @@ import { groupContainers } from 'src/common/group-containers';
 import { ContainerService } from 'src/container/container.service';
 import { ContainerInfo } from '~types/container';
 import { Events } from '~types/events';
+import * as Dockerode from 'dockerode';
 
 @Injectable()
 export class StateService implements OnModuleInit {
@@ -12,6 +13,7 @@ export class StateService implements OnModuleInit {
 
   containers = new Map<string, ContainerInfo>();
   loadings = new Set<string>();
+  stats = new Map<string, Dockerode.ContainerStats[]>();
 
   onModuleInit() {
     this.initialize();

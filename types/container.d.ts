@@ -5,3 +5,5 @@ export type Compose = { name: string; containers: ContainerInfo[] };
 export type GrouppedContainer = Compose | ContainerInfo;
 
 export type ContainerInspect = Dockerode.ContainerInspectInfo;
+
+export type ContainerStats = Dockerode.ContainerStats;
