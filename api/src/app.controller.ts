@@ -20,4 +20,14 @@ export class AppController {
   volumes() {
     return this.appService.volumes();
   }
+
+  @Get('/info')
+  info() {
+    return this.appService.info();
+  }
+
+  @Get('/usage')
+  usage() {
+    return this.appService.usage();
+  }
 }

@@ -12,7 +12,7 @@ export default function MemoryStats({
 }: {
   chartData: ContainerStats[];
 }) {
-  const calculatePercentage = (data: ContainerStats) => {
+  const calculateCPUPercentage = (data: ContainerStats) => {
     const cpu_delta =
       data.cpu_stats.cpu_usage.total_usage -
       data.precpu_stats.cpu_usage.total_usage;
@@ -27,7 +27,7 @@ export default function MemoryStats({
   return (
     <div>
       <span>
-        CPU Usage: {calculatePercentage(chartData[chartData.length - 1])}%
+        CPU Usage: {calculateCPUPercentage(chartData[chartData.length - 1])}%
       </span>
       <ChartContainer config={{}} className="min-h-[100px] w-full h-full">
         <LineChart
@@ -39,16 +39,13 @@ export default function MemoryStats({
           <ChartTooltip
             content={
               <ChartTooltipContent
-                formatter={(val) => {
-                  console.log("val", val, typeof val);
-                  return val || "unknown";
-                }}
+                formatter={(val) => val || "unknown"}
                 labelFormatter={(label) => new Date(label).toLocaleTimeString()}
               />
             }
           />
           <Line
-            dataKey={(val) => calculatePercentage(val)}
+            dataKey={(val) => calculateCPUPercentage(val)}
             fill="gray"
             radius={4}
           />

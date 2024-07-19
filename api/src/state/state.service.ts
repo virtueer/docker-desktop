@@ -4,6 +4,7 @@ import { groupContainers } from 'src/common/group-containers';
 import { ContainerService } from 'src/container/container.service';
 import { ContainerInfo } from '~types/container';
 import { Events } from '~types/events';
+import { DockerInfo } from '~types/info';
 import * as Dockerode from 'dockerode';
 
 @Injectable()
@@ -14,12 +15,14 @@ export class StateService implements OnModuleInit {
   containers = new Map<string, ContainerInfo>();
   loadings = new Set<string>();
   stats = new Map<string, Dockerode.ContainerStats[]>();
+  info: DockerInfo;
 
   onModuleInit() {
     this.initialize();
   }
 
   async initialize() {
+    this.info = await docker.info();
     const events = await docker.getEvents();
 
     events.on('data', (buffer) => {

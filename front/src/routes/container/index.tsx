@@ -1,20 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ContainerTable } from "./_table";
-import { useStore } from "@/store";
-import { TiMessages } from "react-icons/ti";
-import { IoMdInformationCircleOutline } from "react-icons/io";
+import { useGetInfo } from "@/api/info";
+import { useGetUsage } from "@/api/usage";
+import SelectedActions from "@/components/selected/actions";
+import SelectedDelete from "@/components/selected/delete";
 import { Button } from "@/components/ui/button";
-import { FaSearch } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { useStore } from "@/store";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ColumnFiltersState,
   RowSelectionState,
   SortingState,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import SelectedActions from "@/components/selected/actions";
-import SelectedDelete from "@/components/selected/delete";
+import { FaSearch } from "react-icons/fa";
+import { IoMdInformationCircleOutline } from "react-icons/io";
+import { TiMessages } from "react-icons/ti";
+import { ContainerInfo } from "~types/container";
+import { ContainerTable } from "./_table";
+import bytes from "bytes";
 
 export const Route = createFileRoute("/container/")({
   component: Page,
@@ -26,6 +30,12 @@ function Page() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const { data: info } = useGetInfo();
+  const { data: usage } = useGetUsage();
+  const atLeastOneRunningContainer = containers.find(
+    (x) => (x as ContainerInfo).State === "running"
+  );
 
   function handleSwitch() {
     setColumnFilters((oldValues) => {
@@ -69,7 +79,24 @@ function Page() {
             <div>Container cpu usage</div>
             <IoMdInformationCircleOutline />
           </div>
-          <div className="text-slate-400">No containers are running.</div>
+          <div className="text-slate-400 font-semibold">
+            {info && usage && atLeastOneRunningContainer ? (
+              <>
+                <span className="text-green-500">
+                  {usage?.total_cpu_usage.toFixed(2)}%
+                </span>
+                <span className="text-slate-500">
+                  {" "}
+                  / {(info?.NCPU || 0) * 100}%
+                </span>
+                <span className="text-slate-500 text-xs ml-1">
+                  ({info?.NCPU || 0} CPUs available)
+                </span>
+              </>
+            ) : (
+              "No containers are running"
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col">
@@ -77,7 +104,21 @@ function Page() {
             <div>Container memory usage</div>
             <IoMdInformationCircleOutline />
           </div>
-          <div className="text-slate-400">No containers are running.</div>
+          <div className="text-slate-400 font-semibold">
+            {info && usage && atLeastOneRunningContainer ? (
+              <>
+                <span className="text-green-500">
+                  {bytes(usage?.total_memory_usage)}
+                </span>
+                <span className="text-slate-500">
+                  {" "}
+                  / {bytes(info?.MemTotal || 0)}
+                </span>
+              </>
+            ) : (
+              "No containers are running"
+            )}
+          </div>
         </div>
 
         <Button

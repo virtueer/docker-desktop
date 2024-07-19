@@ -6,8 +6,14 @@ import {
 } from "~types/container";
 import { Image, ImageInspect } from "~types/image";
 import { Volume } from "~types/volume";
+import { DockerInfo } from "~types/info";
 
 export type ApiRoutes = {
+  info: DockerInfo;
+  usage: {
+    total_cpu_usage: number;
+    total_memory_usage: number;
+  };
   container: {
     list: ContainerInfo[];
     stop: StatusResponse | FailResponse;
