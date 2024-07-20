@@ -1,0 +1,15 @@
+api/node_modules
+front/node_modules
+types/node_modules
+
+api/.gitignore
+front/.gitignore
+types/.gitignore
+
+api/README.md
+front/README.md
+
+api/dist
+front/dist
+
+front/.env

@@ -9,8 +9,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { exec } from 'child_process';
-import * as pty from 'node-pty';
 import { Server, Socket } from 'socket.io';
 import { docker } from 'src/common/docker';
 import {
@@ -21,7 +19,6 @@ import {
 import { ContainerService } from 'src/container/container.service';
 import { StateService } from 'src/state/state.service';
 import { PassThrough } from 'stream';
-import { ExecParams } from '~types/exec';
 
 function debounce(func, timeout = 300) {
   let timer;
@@ -31,19 +28,6 @@ function debounce(func, timeout = 300) {
       func.apply(this, args);
     }, timeout);
   };
-}
-
-function parseByLines(data: string) {
-  const datas = [];
-  const lines = data.trim().split(/\r?\n/);
-
-  for (const line of lines) {
-    const string = line.trim();
-
-    if (!string) continue;
-    datas.push(string);
-  }
-  return datas;
 }
 
 @WebSocketGateway({
@@ -200,39 +184,5 @@ export class SocketGateway
     socket.once('disconnect', onDisconnect);
     socket.once(`container exec stop ${id}`, onStop);
     socket.on(`container exec input ${id}`, onInput);
-  }
-
-  @SubscribeMessage('logs')
-  handleLogs(@MessageBody() id: string, @ConnectedSocket() socket: Socket) {
-    const command = `docker logs ${id} -f`;
-    const child = exec(command);
-
-    child.stdout.on('data', (data) => {
-      const lines = parseByLines(data);
-
-      for (const line of lines) {
-        socket.emit('logs', { id, data: line });
-      }
-    });
-  }
-
-  @SubscribeMessage('exec')
-  async handleExec(
-    @MessageBody() { id, cols, rows }: ExecParams,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    const terminal = pty.spawn('docker', ['exec', '-it', id, '/bin/sh'], {
-      name: id,
-      cols,
-      rows,
-    });
-
-    console.log('Command ->', `docker exec -it ${id} /bin/sh`);
-
-    terminal.onData((data) => {
-      socket.emit('exec', { id, data });
-    });
-
-    socket.on('input', (data) => terminal.write(data));
   }
 }

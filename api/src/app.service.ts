@@ -42,6 +42,8 @@ export class AppService {
 
     for (const [_, stats] of this.stateService.stats) {
       const last_stat = stats[stats.length - 1];
+      if (!last_stat) continue;
+
       const memory_usage = calculateMemoryUsage(last_stat);
       const cpu_usage = calculateCPUPercentage(last_stat);
 

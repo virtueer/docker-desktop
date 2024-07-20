@@ -25,9 +25,9 @@
     "@nestjs/event-emitter": "^2.0.4",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.3.9",
+    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/websockets": "^10.3.9",
     "dockerode": "^4.0.2",
-    "node-pty": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "stat-json": "^1.0.1"

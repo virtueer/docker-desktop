@@ -28,7 +28,7 @@ export function DataTable<TData>(options: TableOptions<TData>) {
   const table = useReactTable(options);
 
   return (
-    <Table>
+    <Table className="overflow-hidden">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

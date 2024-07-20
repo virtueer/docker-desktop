@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as Dockerode from 'dockerode';
@@ -13,7 +10,6 @@ import { StateService } from 'src/state/state.service';
 import { parse } from 'stat-json';
 import { File } from '~types/file';
 import { Events } from '~types/events';
-import { exec } from '../common/cp';
 
 @Injectable()
 export class ContainerService implements OnModuleInit {
@@ -164,7 +160,7 @@ export class ContainerService implements OnModuleInit {
   }
 
   async onEvent(event: Events) {
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 1000)); // containers updating after event thats why there is a timeout
     this.updateContainers({ id: [event.id] });
   }
 
@@ -344,9 +340,40 @@ export class ContainerService implements OnModuleInit {
   }
 
   async getFiles(id: string, dest = '/') {
+    const container = docker.getContainer(id);
+
     const dest_path = path.posix.normalize(dest + '/');
-    const command = `docker exec ${id} sh -c "ls -a ${dest_path} | xargs -I {} stat ${dest_path}{} || true"`;
-    const { stderr, stdout } = await exec(command);
+    const Cmd = [
+      'sh',
+      '-c',
+      `ls -a ${dest_path} | xargs -I {} stat ${dest_path}{} || true`,
+    ];
+
+    const exec = await container.exec({
+      Cmd,
+      AttachStdout: true,
+      AttachStderr: true,
+    });
+
+    const { stderr, stdout } = await new Promise<{
+      stderr: string;
+      stdout: string;
+    }>(async (resolve) => {
+      let stdout = '';
+      let stderr = '';
+      const stdout_stream = new PassThrough({ encoding: 'utf-8' });
+      const stderr_stream = new PassThrough({ encoding: 'utf-8' });
+      stdout_stream.on('data', (data) => (stdout += data));
+      stderr_stream.on('data', (data) => (stderr += data));
+
+      const stream = await exec.start({});
+
+      docker.modem.demuxStream(stream, stdout_stream, stderr_stream);
+
+      stream.on('close', () => {
+        resolve({ stderr, stdout });
+      });
+    });
 
     if (stderr && !stdout) {
       console.log('stderr', stderr, '---');
